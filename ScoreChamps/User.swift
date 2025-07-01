@@ -1,5 +1,5 @@
 struct User {
-    var name: String
-    var username: String
-    var password: String
+    let name: String
+    let username: String
+    let password: String
 }

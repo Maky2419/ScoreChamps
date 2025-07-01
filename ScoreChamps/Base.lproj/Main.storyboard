@@ -205,7 +205,8 @@
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="filled" title="Button"/>
                                 <connections>
-                                    <segue destination="pZr-lR-edI" kind="show" id="mkE-qn-LcL"/>
+                                    <action selector="LoginBtnActivated:" destination="X2K-h6-iDE" eventType="touchUpInside" id="wvK-l7-2wo"/>
+                                    <segue destination="pZr-lR-edI" kind="show" identifier="goToNext" id="VPy-oF-XWV"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -213,6 +214,10 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     </view>
                     <navigationItem key="navigationItem" id="JS5-c7-3ih"/>
+                    <connections>
+                        <outlet property="PasswordText" destination="cAC-c1-FBg" id="5gF-ob-zLU"/>
+                        <outlet property="UsernamesText" destination="7ca-Bm-Jrn" id="VhY-hO-oLg"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="UTJ-GC-Kfk" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
