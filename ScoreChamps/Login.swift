@@ -5,125 +5,122 @@
 //  Created by Ahsan Kalam on 2025-05-20.
 //
 
-import AuthenticationServices
+import UIKit
 import Firebase
 import FirebaseDatabase
 
+// Define the User struct
 
 
 class Login: UIViewController {
     
     let databaseRef = Database.database().reference()
-    var userKeys: [String] = []   // Declare the userKeys array
-    var k: String = ""
+    var usersMap: [String: User] = [:] // Hashmap to store user data
     private var ref: DatabaseReference!
-    var users: [User] = []    // Declare the variable 'k'
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Writing data to Firebase (create "A" and "S" keys under "name")
-        //("DisplayName,UserName,Password")
+        // Save user data in dictionary format to Firebase
+        databaseRef.child("Accounts").child("0").setValue([
+            "name": "Ahsan",
+            "username": "akalam",
+            "password": "542545"
+        ])
         
-        databaseRef.child("Accounts").child("0").setValue("Ahsan,akalam,542545")
-        databaseRef.child("Accounts").child("1").setValue("Saadia,sawais,722342")
-        //databaseRef.child("Accounts").child("2").setValue("Jayati,Didi,Rohan")
+        databaseRef.child("Accounts").child("1").setValue([
+            "name": "Saadia",
+            "username": "sawais",
+            "password": "722342"
+        ])
         
-        
-        
-//        // Observe the "name" node to get all child keys
-//        databaseRef.child("name").observe(.childAdded) { snapshot in
-//            // Get the key of each child node
-//            let userKey = snapshot.key
-//            print("User Key: \(userKey)")  // Print the key
-//            
-//            // Append the key to the userKeys array
-//            self.userKeys.append(userKey)
-//            
-//            // Update 'k' by appending the userKey
-//            //self.k = self.k + " " + userKey
-//            
-//            // Print userKeys and k after the array is updated
-//            print("userKeys: \(self.userKeys)") // Print the keys array
-//            // print("k: \(self.k)")               // Print the string 'k'
-//            
-//        }
-//        
         ref = Database.database().reference()
-        fetchCommaSeparatedData { users in
-               self.users = users  // ✅ Save to the class property
-               
-               // Example: Accessing saved users
-               if let firstUser = self.users.first {
-                   print("First saved user: \(firstUser.name), \(firstUser.username)")
-               }
-           }
         
-    }
-    func fetchCommaSeparatedData(completion: @escaping ([User]) -> Void) {
-        ref.child("Accounts").observeSingleEvent(of: .value) { snapshot in
-            guard snapshot.exists() else {
-                print("No data found at 'Accounts'")
-                completion([]) // Return empty array if no data
-                return
+        // Fetch data into a hashmap
+        fetchUsersAsMap { usersDictionary in
+            self.usersMap = usersDictionary
+            
+//            // Example: Access user with key "0"
+//            if let user = self.usersMap["0"] {
+//                print("🔍 User 0: \(user.name), \(user.username)")
+//            }
+            
+            // Print all users in hashmap
+            for (key, user) in self.usersMap {
+                print("📌 Key: \(key) -> \(user.name), \(user.username), \(user.password)")
             }
-            
-            var fetchedUsers: [User] = []
-            
-            for child in snapshot.children {
-                if let childSnapshot = child as? DataSnapshot,
-                   let csvString = childSnapshot.value as? String {
-                    
-                    let values = csvString.components(separatedBy: ",")
-                    
-                    if values.count >= 3 {
-                        let user = User(name: values[0], username: values[1], password: values[2])
-                        fetchedUsers.append(user)
-                        print("✅ User added: \(user.name), \(user.username), \(user.password)")
-                    } else {
-                        print("⚠️ Skipped invalid entry in document \(childSnapshot.key)")
-                    }
-                }
-            }
-            
-            print("All users fetched: \(fetchedUsers.count)")
-            completion(fetchedUsers) // Return the array via callback
-            
-        } withCancel: { error in
-            print("Error fetching data: \(error.localizedDescription)")
-            completion([]) // Return empty array on error
         }
     }
 
+    func fetchUsersAsMap(completion: @escaping ([String: User]) -> Void) {
+        ref.child("Accounts").observeSingleEvent(of: .value) { snapshot in
+            guard snapshot.exists() else {
+                print("No data found at 'Accounts'")
+                completion([:])
+                return
+            }
+
+            var userMap: [String: User] = [:]
+
+            for child in snapshot.children {
+                guard let childSnapshot = child as? DataSnapshot else { continue }
+
+                if let value = childSnapshot.value as? [String: Any],
+                   let name = value["name"] as? String,
+                   let username = value["username"] as? String,
+                   let password = value["password"] as? String {
+
+                    let user = User(name: name, username: username, password: password)
+                    userMap[childSnapshot.key] = user
+                    print("✅ User added to hashmap: \(childSnapshot.key) -> \(user.name)")
+                } else {
+                    print("⚠️ Skipped invalid or incomplete entry at \(childSnapshot.key)")
+                }
+            }
+
+            completion(userMap)
+        } withCancel: { error in
+            print("Error fetching data: \(error.localizedDescription)")
+            completion([:])
+        }
+    }
     
-       
+    
+    
+    @IBAction func LoginBtnActivated(_ sender: Any) {
+        guard let enteredUsername = UsernamesText.text,
+                  let enteredPassword = PasswordText.text,
+                  !enteredUsername.isEmpty, !enteredPassword.isEmpty else {
+                showAlert(title: "Error", message: "Please enter both username and password.")
+                return
+            }
+
+            var loginSuccess = false
+
+            for (_, user) in usersMap {
+                if user.username == enteredUsername && user.password == enteredPassword {
+                    loginSuccess = true
+                    break
+                }
+            }
+
+            if loginSuccess {
+                performSegue(withIdentifier: "goToNext", sender: self)
+                
+                // You can perform segue or navigate here
+            } else {
+                showAlert(title: "Failed", message: "Invalid username or password.")
+            }
         
-//    override func viewDidLoad() {
-//        super.viewDidLoad()
-//
-//        appleBtn.addTarget(self, action: #selector(appleSignInTapped), for: .touchUpInside)
-//    }
-//    
-//    @objc func appleSignInTapped() {
-//        let alert = UIAlertController(
-//            title: "Sign in",
-//            message: "Would you like to sign in with your Apple ID?",
-//            preferredStyle: .alert
-//        )
-//
-//        alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { _ in
-//            self.startSignInWithAppleFlow()
-//        }))
-//
-//        alert.addAction(UIAlertAction(title: "No", style: .cancel, handler: nil))
-//
-//        present(alert, animated: true)
-//    }
-
-
-
-
-
+    }
+    @IBOutlet weak var UsernamesText: UITextField!
+    @IBOutlet weak var PasswordText: UITextField!
+    
+    func showAlert(title: String, message: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        present(alert, animated: true)
+    }
+    
 }
-
 
