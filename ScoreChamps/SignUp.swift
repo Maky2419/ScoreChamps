@@ -1,32 +1,27 @@
-//
-//  SignUp.swift
-//  ScoreChamps
-//
-//  Created by Ahsan Kalam on 2025-05-21.
-//
-
-import Foundation
 import UIKit
-import Firebase
 import FirebaseDatabase
+
 class SignUp: UIViewController {
     private var ref: DatabaseReference!
-    var users: [User] = []
-    
+
     @IBOutlet weak var Dname: UITextField!
     @IBOutlet weak var Username: UITextField!
     @IBOutlet weak var Password: UITextField!
-    
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        ref = Database.database().reference()
+    }
+
     @IBAction func SignUpAccount(_ sender: Any) {
-        
-        
-        
-        func viewDidLoad() {
-            super.viewDidLoad()
-          
+        guard
+            let name = Dname.text, !name.isEmpty,
+            let username = Username.text, !username.isEmpty,
+            let password = Password.text, !password.isEmpty
+        else { print("Fill all fields"); return }
+
+        FirebaseService.shared.createUser(name: name, username: username, password: password) { uid in
+            if let uid { print("User created \(uid)") } else { print("Sign up failed") }
         }
-        
-        
-        
     }
 }
