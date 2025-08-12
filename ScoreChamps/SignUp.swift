@@ -10,6 +10,7 @@ class SignUp: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        hideKeyboardWhenTappedAround()
         ref = Database.database().reference()
     }
 

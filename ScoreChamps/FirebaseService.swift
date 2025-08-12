@@ -185,4 +185,39 @@ extension FirebaseService {
         ref.updateChildValues(updates) { err, _ in completion(err == nil) }
     }
 }
+extension FirebaseService {
 
+    /// Create a match for both players (two writes) using a single multi-path update.
+    /// - myUid's entry: opponentUserId = opponentUid, scores.player1 = myScore, scores.player2 = oppScore
+    /// - opponent's entry: opponentUserId = myUid, scores.player1 = oppScore, scores.player2 = myScore
+    func addMatchBothSides(myUid: String,
+                           opponentUid: String,
+                           myScore: Int,
+                           oppScore: Int,
+                           completion: @escaping (Bool, String?) -> Void) {
+
+        let myMatchKey  = ref.child("Accounts").child(myUid).child("matches").childByAutoId().key ?? UUID().uuidString
+        let oppMatchKey = ref.child("Accounts").child(opponentUid).child("matches").childByAutoId().key ?? UUID().uuidString
+
+        let myMatch: [String: Any] = [
+            "opponentUserId": opponentUid,
+            "scores": ["player1": myScore, "player2": oppScore],
+            "createdAt": ServerValue.timestamp()
+        ]
+
+        let oppMatch: [String: Any] = [
+            "opponentUserId": myUid,
+            "scores": ["player1": oppScore, "player2": myScore],
+            "createdAt": ServerValue.timestamp()
+        ]
+
+        let updates: [String: Any] = [
+            "/Accounts/\(myUid)/matches/\(myMatchKey)" : myMatch,
+            "/Accounts/\(opponentUid)/matches/\(oppMatchKey)" : oppMatch
+        ]
+
+        ref.updateChildValues(updates) { error, _ in
+            completion(error == nil, error?.localizedDescription)
+        }
+    }
+}
