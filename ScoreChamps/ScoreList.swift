@@ -3,7 +3,6 @@ import UIKit
 final class ScoreList: UIViewController {
     @IBOutlet weak var tableView: UITableView!
 
-    // Your Match model from FirebaseService.fetchMatches(...)
     private var matches: [Match] = []
     private var usersCache: [String: UserModel] = [:] // cache opponent lookups
 
@@ -15,7 +14,14 @@ final class ScoreList: UIViewController {
         loadMatches()
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        // Refresh after adding a new match
+        loadMatches()
+    }
+
     @IBAction func newScoreTapped(_ sender: Any) {
+        // Go to the friend picker screen
         let vc = UIStoryboard(name: "Main", bundle: nil)
             .instantiateViewController(withIdentifier: "SelectOpponentVC")
         navigationController?.pushViewController(vc, animated: true)
@@ -24,75 +30,47 @@ final class ScoreList: UIViewController {
     private func loadMatches() {
         guard let me = FirebaseService.shared.currentUserId else { return }
         FirebaseService.shared.fetchMatches(for: me) { [weak self] list in
-            self?.matches = list.reversed()
-            self?.tableView.reloadData()
+            guard let self = self else { return }
+            self.matches = list.reversed()
+            DispatchQueue.main.async { self.tableView.reloadData() }
         }
     }
 
-    // Convenience: get opponent user (cached)
-    private func opponent(for uid: String, completion: @escaping (UserModel?) -> Void) {
+    // Convenience: async fetch & cache opponent user
+    private func user(for uid: String, completion: @escaping (UserModel?) -> Void) {
         if let cached = usersCache[uid] { completion(cached); return }
         FirebaseService.shared.fetchUser(byUserId: uid) { [weak self] u in
-            if let u { self?.usersCache[uid] = u }
+            if let u = u { self?.usersCache[uid] = u }
             completion(u)
         }
     }
 }
 
 extension ScoreList: UITableViewDataSource, UITableViewDelegate {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int { matches.count }
 
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        matches.count
-    }
-
-    func tableView(_ tableView: UITableView,
-                   cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ScoreCell")
             ?? UITableViewCell(style: .subtitle, reuseIdentifier: "ScoreCell")
 
         let m = matches[indexPath.row]
-        cell.textLabel?.text = "You \(m.player1) – \(m.player2) …"
-        cell.detailTextLabel?.text = "Loading opponent…"
-        cell.accessoryType = .disclosureIndicator
-        cell.selectionStyle = .none
+        cell.textLabel?.text = "vs. …"
+        cell.detailTextLabel?.text = "You \(m.player1) – \(m.player2)"
 
-        // Fill in opponent name/username when loaded
-        let ip = indexPath
-        opponent(for: m.opponentUserId) { [weak tableView] user in
-            guard let tv = tableView,
-                  let c = tv.cellForRow(at: ip) else { return }
-            let name = user?.name ?? user?.username ?? "Opponent"
-            let uname = user?.username ?? "opponent"
-            c.textLabel?.text = "You \(m.player1) – \(m.player2) \(name)"
-            c.detailTextLabel?.text = "vs @\(uname)"
+        user(for: m.opponentUserId) { user in
+            DispatchQueue.main.async {
+                if let user = user,
+                   tableView.indexPath(for: cell) == indexPath {
+                    cell.textLabel?.text = "vs. \(user.name) (@\(user.username))"
+                }
+            }
         }
-
+        cell.accessoryType = .disclosureIndicator
         return cell
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        let m = matches[indexPath.row]
-
-        guard let nav = navigationController else { return }
-
-        // Prefer popping back to an existing picker if it's already in the stack
-        if let picker = nav.viewControllers.first(where: { $0 is SelectOpponentViewController }) as? SelectOpponentViewController {
-            // Preselect this opponent in the picker (username is optional)
-            let username = usersCache[m.opponentUserId]?.username ?? ""
-            picker.preselectOpponent = OpponentPref(uid: m.opponentUserId, username: username)
-            picker.autoOpenPreselected = false
-            nav.popToViewController(picker, animated: true)
-            return
-        }
-
-        // Otherwise push a new picker and preselect the same opponent
-        let vc = UIStoryboard(name: "Main", bundle: nil)
-            .instantiateViewController(withIdentifier: "SelectOpponentVC") as! SelectOpponentViewController
-        let username = usersCache[m.opponentUserId]?.username ?? ""
-        vc.preselectOpponent = OpponentPref(uid: m.opponentUserId, username: username)
-        vc.autoOpenPreselected = false
-        nav.pushViewController(vc, animated: true)
+        // If you later want to push a chart/details screen, do it here.
     }
 }
