@@ -19,19 +19,24 @@ final class ScoreList: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = "Scores"
+        // Title is optional since we aren't using a nav bar
+        // title = "Scores"
 
         tableView.dataSource = self
         tableView.delegate = self
         tableView.tableFooterView = UIView()
+        tableView.allowsSelection = true
+        tableView.estimatedRowHeight = 60
+        tableView.rowHeight = UITableView.automaticDimension
 
-        // If your storyboard cell isn't set to Subtitle, we'll create one on the fly in cellForRow.
         loadMatches()
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        loadMatches() // refresh after adding a new match
+        // If you present fullScreen, viewWillAppear will run again after dismiss.
+        // For pageSheet/overFullScreen it may not; we also reload via closures on dismiss.
+        loadMatches()
     }
 
     @IBAction func newScoreTapped(_ sender: Any) {
@@ -40,15 +45,19 @@ final class ScoreList: UIViewController {
             assertionFailure("Storyboard ID mismatch for NewScoreViewController")
             return
         }
-        navigationController?.pushViewController(vc, animated: true)
+        // Callback so we refresh when the modal is dismissed after saving/cancel
+        vc.onSaved = { [weak self] in self?.loadMatches() }
+        vc.onClosed = { [weak self] in self?.loadMatches() }
+
+        vc.modalPresentationStyle = .fullScreen
+        present(vc, animated: true)
     }
 
     private func loadMatches() {
         guard !currentUserId.isEmpty else { return }
         FirebaseService.shared.fetchMatches(for: currentUserId) { [weak self] list in
             guard let self = self else { return }
-            // newest first? use list.reversed()
-            self.matches = list
+            self.matches = list                // or Array(list.reversed()) for newest first
             DispatchQueue.main.async { self.tableView.reloadData() }
         }
     }
@@ -60,6 +69,21 @@ final class ScoreList: UIViewController {
             if let u = u { self?.usersCache[uid] = u }
             completion(u)
         }
+    }
+
+    private func showEditor(for match: Match) {
+        let sb = UIStoryboard(name: "Main", bundle: nil)
+        guard let vc = sb.instantiateViewController(withIdentifier: "EditMatchViewController") as? EditMatchViewController else {
+            assertionFailure("Storyboard ID 'EditMatchViewController' not found or class mismatch.")
+            return
+        }
+        vc.match = match
+        vc.onSaved = { [weak self] in self?.loadMatches() }
+        vc.onClosed = { [weak self] in self?.loadMatches() }
+
+        // Present modally since we're not using a nav controller
+        vc.modalPresentationStyle = .fullScreen   // or .pageSheet on iPad if you prefer
+        present(vc, animated: true)
     }
 }
 
@@ -76,19 +100,19 @@ extension ScoreList: UITableViewDataSource, UITableViewDelegate {
 
         let m = matches[indexPath.row]
 
+        // default while we resolve opponent
         cell.textLabel?.text = "vs. …"
         cell.detailTextLabel?.text = "You \(m.player1) – \(m.player2)"
         cell.accessoryType = .disclosureIndicator
 
-        // Resolve opponent name
+        // Resolve opponent name asynchronously (protect against cell reuse)
         user(for: m.opponentUserId) { [weak tableView] user in
             DispatchQueue.main.async {
                 guard
                     let tableView = tableView,
-                    let ip = tableView.indexPath(for: cell),
-                    ip == indexPath
+                    let currentIndex = tableView.indexPath(for: cell),
+                    currentIndex == indexPath
                 else { return }
-
                 if let u = user {
                     let name = !u.name.isEmpty ? u.name : (!u.username.isEmpty ? "@\(u.username)" : u.userId)
                     cell.textLabel?.text = "vs. \(name)"
@@ -103,6 +127,6 @@ extension ScoreList: UITableViewDataSource, UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        // TODO: push a match details screen if desired
+        showEditor(for: matches[indexPath.row])
     }
 }

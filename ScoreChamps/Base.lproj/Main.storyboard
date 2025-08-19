@@ -220,6 +220,7 @@
         <!--New Score View Controller-->
         <scene sceneID="QnZ-Xl-bP1">
             <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="5TH-ff-jGp" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
                 <viewController storyboardIdentifier="NewScoreViewController" modalPresentationStyle="fullScreen" id="xE8-Y1-u6E" customClass="NewScoreViewController" customModule="ScoreChamps" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="9WE-4c-tnD">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
@@ -239,9 +240,111 @@
                         <outlet property="tableView" destination="Xg8-KJ-o6H" id="aXH-KG-hwq"/>
                     </connections>
                 </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="5TH-ff-jGp" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2194.6564885496182" y="743.66197183098598"/>
+        </scene>
+        <!--Edit Match View Controller-->
+        <scene sceneID="dM5-dB-41X">
+            <objects>
+                <viewController storyboardIdentifier="EditMatchViewController" modalPresentationStyle="fullScreen" id="Whg-sn-nqu" customClass="EditMatchViewController" customModule="ScoreChamps" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="sXI-ax-Lkr">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ucD-31-XDP">
+                                <rect key="frame" x="42" y="204" width="128" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WhA-yV-7z4">
+                                <rect key="frame" x="42" y="374" width="79" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bJb-Y2-PMv">
+                                <rect key="frame" x="229" y="374" width="81" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KRr-rm-Z2L">
+                                <rect key="frame" x="43" y="488" width="32" height="35"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="filled" title="-"/>
+                                <connections>
+                                    <action selector="yourMinusTapped:" destination="Whg-sn-nqu" eventType="touchUpInside" id="XeX-s6-57Y"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xRU-T1-ZHc">
+                                <rect key="frame" x="41" y="644" width="35" height="35"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="filled" title="+"/>
+                                <connections>
+                                    <action selector="yourPlusTapped:" destination="Whg-sn-nqu" eventType="touchUpInside" id="nF1-D4-r6J"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Jrw-Sc-oCM">
+                                <rect key="frame" x="255" y="659" width="35" height="35"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="filled" title="+"/>
+                                <connections>
+                                    <action selector="theirPlusTapped:" destination="Whg-sn-nqu" eventType="touchUpInside" id="NmC-Qi-oQC"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zxF-Ey-mSr">
+                                <rect key="frame" x="253" y="488" width="32" height="41"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="filled" title="-"/>
+                                <connections>
+                                    <action selector="theirMinusTapped:" destination="Whg-sn-nqu" eventType="touchUpInside" id="cFH-St-MLM"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bEC-Ht-Lxp">
+                                <rect key="frame" x="222" y="749" width="61" height="35"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="filled" title="Save"/>
+                                <connections>
+                                    <action selector="saveTapped:" destination="Whg-sn-nqu" eventType="touchUpInside" id="vtb-o8-w6c"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aHv-rs-clc">
+                                <rect key="frame" x="76" y="734" width="62" height="35"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="filled" title="Back"/>
+                                <connections>
+                                    <action selector="cancelTapped:" destination="Whg-sn-nqu" eventType="touchUpInside" id="cSa-or-nzi"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="wTY-gA-M1I"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    </view>
+                    <connections>
+                        <outlet property="cancelButton" destination="aHv-rs-clc" id="fUk-y6-Ziv"/>
+                        <outlet property="opponentLabel" destination="ucD-31-XDP" id="hjB-5M-cPL"/>
+                        <outlet property="saveButton" destination="bEC-Ht-Lxp" id="K3g-k6-EN9"/>
+                        <outlet property="theirMinusButton" destination="zxF-Ey-mSr" id="pwx-zK-Fw0"/>
+                        <outlet property="theirPlusButton" destination="Jrw-Sc-oCM" id="nMl-HT-Uia"/>
+                        <outlet property="theirScoreLabel" destination="bJb-Y2-PMv" id="y78-Gy-xdg"/>
+                        <outlet property="yourMinusButton" destination="KRr-rm-Z2L" id="3P9-NA-Vri"/>
+                        <outlet property="yourPlusButton" destination="xRU-T1-ZHc" id="WNU-WZ-A94"/>
+                        <outlet property="yourScoreLabel" destination="WhA-yV-7z4" id="x4Y-Or-GqX"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="qdf-7E-Etg" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3001" y="744"/>
         </scene>
         <!--Login-->
         <scene sceneID="TjR-H0-aHk">
@@ -487,7 +590,7 @@
     </scenes>
     <inferredMetricsTieBreakers>
         <segue reference="1gA-SH-MlM"/>
-        <segue reference="lng-2J-B4x"/>
+        <segue reference="VPy-oF-XWV"/>
         <segue reference="10t-d8-awZ"/>
     </inferredMetricsTieBreakers>
     <resources>

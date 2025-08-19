@@ -2,8 +2,6 @@
 //  NewScoreViewController.swift
 //  ScoreChamps
 //
-//  Created by Ahsan Kalam on 8/19/25.
-//
 
 import UIKit
 
@@ -15,16 +13,17 @@ final class NewScoreViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
 
     weak var delegate: NewScoreDelegate?
+    var onSaved: (() -> Void)?   // called after a successful save
+    var onClosed: (() -> Void)?  // called when screen is closed (cancel/back)
+
     private var friends: [UserModel] = []
 
-    // Read the latest each time; don’t cache.
     private var currentUserId: String {
         FirebaseService.shared.currentUserId ?? ""
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = "Choose Opponent"
 
         tableView.dataSource = self
         tableView.delegate = self
@@ -34,14 +33,15 @@ final class NewScoreViewController: UIViewController {
         loadFriends()
     }
 
-    // MARK: - Data
+    // Optional: hook a "Close" UIButton in storyboard to this
+    @IBAction func closeTapped(_ sender: Any) {
+        onClosed?()
+        dismiss(animated: true)
+    }
+
     private func loadFriends() {
         let uid = currentUserId
-        guard !uid.isEmpty else {
-            print("❗️No currentUserId in NewScoreVC")
-            return
-        }
-
+        guard !uid.isEmpty else { return }
         FirebaseService.shared.fetchFriends(for: uid) { [weak self] users in
             DispatchQueue.main.async {
                 self?.friends = users
@@ -50,7 +50,6 @@ final class NewScoreViewController: UIViewController {
         }
     }
 
-    // MARK: - Create match
     private func promptForScores(opponent: UserModel) {
         let label: String = !opponent.name.isEmpty
             ? opponent.name
@@ -71,12 +70,12 @@ final class NewScoreViewController: UIViewController {
             tf.keyboardType = UIKeyboardType.numberPad
         }
 
-        // Cancel -> close alert AND pop back
+        // Cancel closes the alert and dismisses this VC (since no nav stack)
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { [weak self] _ in
-            self?.popSelf()
+            self?.onClosed?()
+            self?.dismiss(animated: true)
         }))
 
-        // Save -> write both sides; on success, pop back
         alert.addAction(UIAlertAction(title: "Save", style: .default, handler: { [weak self] _ in
             guard
                 let self = self,
@@ -95,9 +94,8 @@ final class NewScoreViewController: UIViewController {
             ) { ok, err in
                 DispatchQueue.main.async {
                     if ok {
-                        // Optional: notify delegate if you use it elsewhere
-                        // self.delegate?.newScoreViewController(self, didCreate: ...)
-                        self.popSelf()
+                        self.onSaved?()
+                        self.dismiss(animated: true)
                     } else {
                         let a = UIAlertController(title: "Error", message: err ?? "Failed to save match.", preferredStyle: .alert)
                         a.addAction(UIAlertAction(title: "OK", style: .default))
@@ -109,31 +107,20 @@ final class NewScoreViewController: UIViewController {
 
         present(alert, animated: true)
     }
-
-    /// Pops to previous screen, or dismisses if presented modally.
-    private func popSelf() {
-        if let nav = navigationController {
-            nav.popViewController(animated: true)
-        } else {
-            dismiss(animated: true)
-        }
-    }
 }
 
-// MARK: - UITableView
 extension NewScoreViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         friends.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        // Ensure Subtitle style when no prototype exists.
+        // Subtitle style if no prototype cell
         let cell = tableView.dequeueReusableCell(withIdentifier: "FriendCell")
             ?? UITableViewCell(style: .subtitle, reuseIdentifier: "FriendCell")
 
         let u = friends[indexPath.row]
-        let primary: String = !u.name.isEmpty ? u.name
-            : (!u.username.isEmpty ? "@\(u.username)" : u.userId)
+        let primary: String = !u.name.isEmpty ? u.name : (!u.username.isEmpty ? "@\(u.username)" : u.userId)
         let secondary: String = !u.username.isEmpty ? "@\(u.username)" : "ID: \(u.userId)"
 
         cell.textLabel?.text = primary

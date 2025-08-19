@@ -221,6 +221,22 @@ final class FirebaseService {
         refMatch.setValue(m) { err, _ in completion(err == nil) }
     }
 
+    func updateMatch(for uid: String,
+                     matchId: String,
+                     p1: Int,
+                     p2: Int,
+                     completion: @escaping (Bool) -> Void) {
+        let scoresRef = ref.child("Accounts")
+            .child(uid)
+            .child("matches")
+            .child(matchId)
+            .child("scores")
+
+        scoresRef.updateChildValues(["player1": p1, "player2": p2]) { err, _ in
+            completion(err == nil)
+        }
+    }
+    
     /// Two-sided add via multi-path update (recommended for ScoreList).
     func addMatchBothSides(myUid: String,
                            opponentUid: String,
