@@ -178,6 +178,10 @@
                                 <rect key="frame" x="272" y="133" width="107" height="35"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="filled" title="New Score"/>
+                                <connections>
+                                    <action selector="newScoreTapped:" destination="pZr-lR-edI" eventType="touchUpInside" id="Z9n-5E-4Mk"/>
+                                    <segue destination="xE8-Y1-u6E" kind="show" id="V61-10-BK1"/>
+                                </connections>
                             </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="g3F-za-v2e"/>
@@ -212,6 +216,32 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="nsg-Ac-N01" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1690.8396946564885" y="-2.1126760563380285"/>
+        </scene>
+        <!--New Score View Controller-->
+        <scene sceneID="QnZ-Xl-bP1">
+            <objects>
+                <viewController storyboardIdentifier="NewScoreViewController" modalPresentationStyle="fullScreen" id="xE8-Y1-u6E" customClass="NewScoreViewController" customModule="ScoreChamps" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="9WE-4c-tnD">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="Xg8-KJ-o6H">
+                                <rect key="frame" x="16" y="91" width="361" height="693"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            </tableView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="eTK-0t-GQx"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="fP1-q7-2s4"/>
+                    <connections>
+                        <outlet property="tableView" destination="Xg8-KJ-o6H" id="aXH-KG-hwq"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="5TH-ff-jGp" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2194.6564885496182" y="743.66197183098598"/>
         </scene>
         <!--Login-->
         <scene sceneID="TjR-H0-aHk">

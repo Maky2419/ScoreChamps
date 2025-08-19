@@ -7,6 +7,88 @@
 
 import Foundation
 
+//
+//  ScoreModel.swift
+//  ScoreChamps
+//
+
+import Foundation
+import FirebaseDatabase
+
+struct ScoreModel: Codable {
+    let id: String
+    let player1Id: String
+    let player2Id: String
+    let player1Score: Int
+    let player2Score: Int
+    let createdAt: TimeInterval   // seconds since 1970
+
+    // Convenience
+    var date: Date { Date(timeIntervalSince1970: createdAt) }
+    var winnerId: String? {
+        guard player1Score != player2Score else { return nil }
+        return player1Score > player2Score ? player1Id : player2Id
+    }
+}
+
+// MARK: - Firebase helpers
+extension ScoreModel {
+
+    /// Build from a Firebase dict (Realtime DB)
+    init?(id: String? = nil, dict: [String: Any]) {
+        // Required strings
+        guard
+            let p1Id = dict["player1Id"] as? String,
+            let p2Id = dict["player2Id"] as? String
+        else { return nil }
+
+        // Ints may come back as Int/Double/NSNumber
+        func intValue(_ any: Any?) -> Int? {
+            if let i = any as? Int { return i }
+            if let d = any as? Double { return Int(d) }
+            if let n = any as? NSNumber { return n.intValue }
+            return nil
+        }
+        let p1Score = intValue(dict["player1Score"])
+        let p2Score = intValue(dict["player2Score"])
+
+        // createdAt may be Double/NSNumber (or missing)
+        let created: TimeInterval = {
+            if let t = dict["createdAt"] as? TimeInterval { return t }
+            if let n = dict["createdAt"] as? NSNumber { return n.doubleValue }
+            return Date().timeIntervalSince1970
+        }()
+
+        guard let s1 = p1Score, let s2 = p2Score else { return nil }
+
+        self.id = (dict["id"] as? String) ?? id ?? UUID().uuidString
+        self.player1Id = p1Id
+        self.player2Id = p2Id
+        self.player1Score = s1
+        self.player2Score = s2
+        self.createdAt = created
+    }
+
+    /// Build from a Realtime Database snapshot
+    init?(snapshot: DataSnapshot) {
+        guard let d = snapshot.value as? [String: Any] else { return nil }
+        self.init(id: snapshot.key, dict: d)
+    }
+
+    /// Convert to a Firebase-friendly payload
+    var dict: [String: Any] {
+        return [
+            "id": id,
+            "player1Id": player1Id,
+            "player2Id": player2Id,
+            "player1Score": player1Score,
+            "player2Score": player2Score,
+            "createdAt": createdAt
+        ]
+    }
+}
+
+
 struct Match {
     let matchId: String
     let opponentUserId: String
