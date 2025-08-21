@@ -10,11 +10,12 @@ final class EditMatchViewController: UIViewController {
     // Inject this before presenting
     var match: Match!
 
-    // Callbacks to let ScoreList refresh after dismiss
+    // Callbacks so ScoreList can refresh after dismiss
     var onSaved: (() -> Void)?
     var onClosed: (() -> Void)?
 
     // MARK: - Outlets (connect these in storyboard)
+    @IBOutlet weak var titleLabel: UILabel!        // <-- NEW: shows match title
     @IBOutlet weak var opponentLabel: UILabel!
 
     @IBOutlet weak var yourScoreLabel: UILabel!
@@ -25,7 +26,7 @@ final class EditMatchViewController: UIViewController {
     @IBOutlet weak var theirMinusButton: UIButton!
     @IBOutlet weak var theirPlusButton: UIButton!
 
-    // Save / Cancel buttons in the view (since no nav bar)
+    // Save / Close buttons in the view (since no nav bar)
     @IBOutlet weak var saveButton: UIButton!
     @IBOutlet weak var cancelButton: UIButton!
 
@@ -41,18 +42,19 @@ final class EditMatchViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Prefill from the match
+        // Prefill scores from the match
         yourScore  = match.player1
         theirScore = match.player2
         updateScoreLabels()
-        loadOpponentName()
 
-        // Optional UI polish
-        saveButton.setTitle("Save", for: .normal)
-        cancelButton.setTitle("Close", for: .normal)
-    }
+        // Title label (optional)
+        if let t = match.title, !t.isEmpty {
+            titleLabel.text = t
+        } else {
+            titleLabel.text = "Match"
+        }
 
-    private func loadOpponentName() {
+        // Opponent label
         opponentLabel.text = "vs. …"
         FirebaseService.shared.fetchUser(byUserId: match.opponentUserId) { [weak self] user in
             DispatchQueue.main.async {
@@ -65,6 +67,10 @@ final class EditMatchViewController: UIViewController {
                 }
             }
         }
+
+        // Buttons text (optional polish)
+        saveButton.setTitle("Save", for: .normal)
+        cancelButton.setTitle("Close", for: .normal)
     }
 
     private func updateScoreLabels() {
@@ -88,7 +94,7 @@ final class EditMatchViewController: UIViewController {
         theirScore += 1; updateScoreLabels()
     }
 
-    // MARK: - Save / Cancel
+    // MARK: - Save / Close
     @IBAction func saveTapped(_ sender: UIButton) {
         guard !currentUserId.isEmpty else { return }
         FirebaseService.shared.updateMatch(

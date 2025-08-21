@@ -57,20 +57,30 @@ final class NewScoreViewController: UIViewController {
 
         let alert = UIAlertController(
             title: "New Score vs \(label)",
-            message: "Enter the final scores",
+            message: "Add a title and scores",
             preferredStyle: .alert
         )
 
+        // 1) Title (optional)
         alert.addTextField { tf in
-            tf.placeholder = "Your score"
-            tf.keyboardType = UIKeyboardType.numberPad
-        }
-        alert.addTextField { tf in
-            tf.placeholder = "\(label)'s score"
-            tf.keyboardType = UIKeyboardType.numberPad
+            tf.placeholder = "Title (optional)"
+            tf.autocapitalizationType = .words
+            tf.returnKeyType = .done
         }
 
-        // Cancel closes the alert and dismisses this VC (since no nav stack)
+        // 2) Your score
+        alert.addTextField { tf in
+            tf.placeholder = "Your score"
+            tf.keyboardType = .numberPad
+        }
+
+        // 3) Their score
+        alert.addTextField { tf in
+            tf.placeholder = "\(label)'s score"
+            tf.keyboardType = .numberPad
+        }
+
+        // Cancel closes (since no nav controller)
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { [weak self] _ in
             self?.onClosed?()
             self?.dismiss(animated: true)
@@ -79,18 +89,21 @@ final class NewScoreViewController: UIViewController {
         alert.addAction(UIAlertAction(title: "Save", style: .default, handler: { [weak self] _ in
             guard
                 let self = self,
-                let yoursText = alert.textFields?.first?.text,
-                let theirsText = alert.textFields?.last?.text,
-                let yourScore = Int(yoursText),
+                let titleText = alert.textFields?[0].text,                      // Title (optional)
+                let yoursText = alert.textFields?[1].text,
+                let theirsText = alert.textFields?[2].text,
+                let yourScore  = Int(yoursText),
                 let theirScore = Int(theirsText),
                 !self.currentUserId.isEmpty
             else { return }
 
+            // Save to both players under /Accounts/.../matches (where ScoreList reads)
             FirebaseService.shared.addMatchBothSides(
                 myUid: self.currentUserId,
                 opponentUid: opponent.userId,
                 myScore: yourScore,
-                oppScore: theirScore
+                oppScore: theirScore,
+                title: titleText.isEmpty ? nil : titleText                      // <-- NEW
             ) { ok, err in
                 DispatchQueue.main.async {
                     if ok {
@@ -103,6 +116,9 @@ final class NewScoreViewController: UIViewController {
                     }
                 }
             }
+
+            // (Optional) If you also keep a global /Scores history:
+            // FirebaseService.shared.createScore(player1Id: self.currentUserId, player2Id: opponent.userId, player1Score: yourScore, player2Score: theirScore, title: titleText.isEmpty ? nil : titleText) { _ in }
         }))
 
         present(alert, animated: true)
@@ -126,7 +142,6 @@ extension NewScoreViewController: UITableViewDataSource, UITableViewDelegate {
         cell.textLabel?.text = primary
         cell.detailTextLabel?.text = secondary
         cell.accessoryType = .disclosureIndicator
-
         return cell
     }
 

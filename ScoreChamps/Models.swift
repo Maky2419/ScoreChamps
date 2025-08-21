@@ -94,23 +94,19 @@ struct Match {
     let opponentUserId: String
     let player1: Int
     let player2: Int
+    let title: String?            // <-- NEW
+    // createdAt, etc.
 
     init?(matchId: String, dict: [String: Any]) {
-        guard
-            let opponentUserId = dict["opponentUserId"] as? String,
-            let scores = dict["scores"] as? [String: Any],
-            let p1 = scores["player1"] as? Int,
-            let p2 = scores["player2"] as? Int
-        else { return nil }
         self.matchId = matchId
-        self.opponentUserId = opponentUserId
-        self.player1 = p1
-        self.player2 = p2
-    }
-
-    var dict: [String: Any] {
-        ["opponentUserId": opponentUserId,
-         "scores": ["player1": player1, "player2": player2]]
+        self.opponentUserId = dict["opponentUserId"] as? String ?? ""
+        if let scores = dict["scores"] as? [String: Any] {
+            self.player1 = (scores["player1"] as? NSNumber)?.intValue ?? (scores["player1"] as? Int) ?? 0
+            self.player2 = (scores["player2"] as? NSNumber)?.intValue ?? (scores["player2"] as? Int) ?? 0
+        } else {
+            self.player1 = 0; self.player2 = 0
+        }
+        self.title = dict["title"] as? String
     }
 }
 

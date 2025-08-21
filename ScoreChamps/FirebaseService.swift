@@ -237,6 +237,77 @@ final class FirebaseService {
         }
     }
     
+    /// Two-sided add via multi-path update (now supports optional title)
+    func addMatchBothSides(myUid: String,
+                           opponentUid: String,
+                           myScore: Int,
+                           oppScore: Int,
+                           title: String? = nil,
+                           completion: @escaping (Bool, String?) -> Void) {
+
+        let myKey  = ref.child("Accounts").child(myUid).child("matches").childByAutoId().key ?? UUID().uuidString
+        let oppKey = ref.child("Accounts").child(opponentUid).child("matches").childByAutoId().key ?? UUID().uuidString
+
+        var myMatch: [String: Any] = [
+            "opponentUserId": opponentUid,
+            "scores": ["player1": myScore, "player2": oppScore],
+            "createdAt": ServerValue.timestamp()
+        ]
+        var oppMatch: [String: Any] = [
+            "opponentUserId": myUid,
+            "scores": ["player1": oppScore, "player2": myScore],
+            "createdAt": ServerValue.timestamp()
+        ]
+        if let t = title, !t.isEmpty {
+            myMatch["title"] = t
+            oppMatch["title"] = t
+        }
+
+        let updates: [String: Any] = [
+            "/Accounts/\(myUid)/matches/\(myKey)" : myMatch,
+            "/Accounts/\(opponentUid)/matches/\(oppKey)" : oppMatch
+        ]
+
+        ref.updateChildValues(updates) { error, _ in
+            completion(error == nil, error?.localizedDescription)
+        }
+    }
+
+    /// Optional global Scores collection now includes title
+    func createScore(player1Id: String,
+                     player2Id: String,
+                     player1Score: Int,
+                     player2Score: Int,
+                     title: String? = nil,
+                     completion: @escaping (Result<ScoreModel, Error>) -> Void) {
+        let newRef = ref.child("Scores").childByAutoId()
+        var payload: [String: Any] = [
+            "id": newRef.key ?? UUID().uuidString,
+            "player1Id": player1Id,
+            "player2Id": player2Id,
+            "player1Score": player1Score,
+            "player2Score": player2Score,
+            "createdAt": Date().timeIntervalSince1970
+        ]
+        if let t = title, !t.isEmpty { payload["title"] = t }
+
+        newRef.setValue(payload) { error, _ in
+            if let error = error { completion(.failure(error)); return }
+            // If your ScoreModel has a `title` property, initialize it accordingly.
+            let model = ScoreModel(
+                id: payload["id"] as! String,
+                player1Id: player1Id,
+                player2Id: player2Id,
+                player1Score: player1Score,
+                player2Score: player2Score,
+                createdAt: payload["createdAt"] as! TimeInterval
+                // + title if you added it to the model
+            )
+            completion(.success(model))
+        }
+    }
+
+    
     /// Two-sided add via multi-path update (recommended for ScoreList).
     func addMatchBothSides(myUid: String,
                            opponentUid: String,

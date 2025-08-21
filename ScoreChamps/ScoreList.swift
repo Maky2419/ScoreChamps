@@ -19,8 +19,6 @@ final class ScoreList: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Title is optional since we aren't using a nav bar
-        // title = "Scores"
 
         tableView.dataSource = self
         tableView.delegate = self
@@ -29,13 +27,20 @@ final class ScoreList: UIViewController {
         tableView.estimatedRowHeight = 60
         tableView.rowHeight = UITableView.automaticDimension
 
+        // Pull to refresh (optional)
+        let rc = UIRefreshControl()
+        rc.addTarget(self, action: #selector(refreshPulled), for: .valueChanged)
+        tableView.refreshControl = rc
+
         loadMatches()
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        // If you present fullScreen, viewWillAppear will run again after dismiss.
-        // For pageSheet/overFullScreen it may not; we also reload via closures on dismiss.
+        loadMatches()
+    }
+
+    @objc private func refreshPulled() {
         loadMatches()
     }
 
@@ -45,10 +50,8 @@ final class ScoreList: UIViewController {
             assertionFailure("Storyboard ID mismatch for NewScoreViewController")
             return
         }
-        // Callback so we refresh when the modal is dismissed after saving/cancel
-        vc.onSaved = { [weak self] in self?.loadMatches() }
+        vc.onSaved  = { [weak self] in self?.loadMatches() }
         vc.onClosed = { [weak self] in self?.loadMatches() }
-
         vc.modalPresentationStyle = .fullScreen
         present(vc, animated: true)
     }
@@ -57,8 +60,11 @@ final class ScoreList: UIViewController {
         guard !currentUserId.isEmpty else { return }
         FirebaseService.shared.fetchMatches(for: currentUserId) { [weak self] list in
             guard let self = self else { return }
-            self.matches = list                // or Array(list.reversed()) for newest first
-            DispatchQueue.main.async { self.tableView.reloadData() }
+            self.matches = list
+            DispatchQueue.main.async {
+                self.tableView.refreshControl?.endRefreshing()
+                self.tableView.reloadData()
+            }
         }
     }
 
@@ -78,11 +84,9 @@ final class ScoreList: UIViewController {
             return
         }
         vc.match = match
-        vc.onSaved = { [weak self] in self?.loadMatches() }
+        vc.onSaved  = { [weak self] in self?.loadMatches() }
         vc.onClosed = { [weak self] in self?.loadMatches() }
-
-        // Present modally since we're not using a nav controller
-        vc.modalPresentationStyle = .fullScreen   // or .pageSheet on iPad if you prefer
+        vc.modalPresentationStyle = .fullScreen
         present(vc, animated: true)
     }
 }
@@ -100,12 +104,18 @@ extension ScoreList: UITableViewDataSource, UITableViewDelegate {
 
         let m = matches[indexPath.row]
 
-        // default while we resolve opponent
-        cell.textLabel?.text = "vs. …"
+        // Title (optional) + opponent placeholder
+        if let title = m.title, !title.isEmpty {
+            cell.textLabel?.text = "\(title) — vs. …"
+        } else {
+            cell.textLabel?.text = "vs. …"
+        }
+
+        // Your score vs their score
         cell.detailTextLabel?.text = "You \(m.player1) – \(m.player2)"
         cell.accessoryType = .disclosureIndicator
 
-        // Resolve opponent name asynchronously (protect against cell reuse)
+        // Resolve opponent name asynchronously
         user(for: m.opponentUserId) { [weak tableView] user in
             DispatchQueue.main.async {
                 guard
@@ -113,11 +123,18 @@ extension ScoreList: UITableViewDataSource, UITableViewDelegate {
                     let currentIndex = tableView.indexPath(for: cell),
                     currentIndex == indexPath
                 else { return }
+
+                let nameText: String
                 if let u = user {
-                    let name = !u.name.isEmpty ? u.name : (!u.username.isEmpty ? "@\(u.username)" : u.userId)
-                    cell.textLabel?.text = "vs. \(name)"
+                    nameText = !u.name.isEmpty ? u.name : (!u.username.isEmpty ? "@\(u.username)" : u.userId)
                 } else {
-                    cell.textLabel?.text = "vs. (unknown)"
+                    nameText = "(unknown)"
+                }
+
+                if let title = m.title, !title.isEmpty {
+                    cell.textLabel?.text = "\(title) — vs. \(nameText)"
+                } else {
+                    cell.textLabel?.text = "vs. \(nameText)"
                 }
             }
         }
