@@ -276,7 +276,6 @@
         <!--New Score View Controller-->
         <scene sceneID="QnZ-Xl-bP1">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="5TH-ff-jGp" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
                 <viewController storyboardIdentifier="NewScoreViewController" modalPresentationStyle="fullScreen" id="xE8-Y1-u6E" customClass="NewScoreViewController" customModule="ScoreChamps" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="9WE-4c-tnD">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
@@ -301,6 +300,7 @@
                         <outlet property="tableView" destination="Xg8-KJ-o6H" id="aXH-KG-hwq"/>
                     </connections>
                 </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="5TH-ff-jGp" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2194.6564885496182" y="743.66197183098598"/>
         </scene>
@@ -596,11 +596,11 @@
                                                 <stackView contentMode="scaleToFill" axis="vertical" alignment="top" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="Stk-00-001">
                                                     <rect key="frame" x="200" y="12.333333333333332" width="91" height="42.666666666666671"/>
                                                     <subviews>
-                                                        <label contentMode="scaleToFill" text="Full Name" lineBreakMode="tailTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Lbl-Name">
+                                                        <label contentMode="scaleToFill" ambiguous="YES" text="Full Name" lineBreakMode="tailTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Lbl-Name">
                                                             <rect key="frame" x="0.0" y="0.0" width="75.666666666666671" height="20.333333333333332"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                         </label>
-                                                        <label contentMode="scaleToFill" text="@username" lineBreakMode="tailTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Lbl-User">
+                                                        <label contentMode="scaleToFill" ambiguous="YES" text="@username" lineBreakMode="tailTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Lbl-User">
                                                             <rect key="frame" x="0.0" y="22.333333333333329" width="91" height="20.333333333333329"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                         </label>

@@ -317,6 +317,7 @@
 				DEVELOPMENT_TEAM = U423N4MG4T;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ScoreChamps/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = ScoreForge;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -345,6 +346,7 @@
 				DEVELOPMENT_TEAM = U423N4MG4T;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ScoreChamps/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = ScoreForge;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
