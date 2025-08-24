@@ -86,7 +86,7 @@ final class FirebaseService {
                 friendIds = map.compactMap { (k, v) in
                     if let b = v as? Bool, b { return k }
                     if let n = v as? NSNumber, n.boolValue { return k }
-                    if let s = v as? String { return s.isEmpty ? nil : k } // stored username -> truthy
+                    if let s = v as? String { return s.isEmpty ? nil : k } // username stored -> treat as truthy
                     return nil
                 }
             } else if let list = userDict["friends"] as? [String] {
@@ -195,6 +195,8 @@ final class FirebaseService {
     }
 
     // MARK: - Matches
+
+    /// Read matches under /Accounts/{uid}/matches → [Match]
     func fetchMatches(for uid: String, completion: @escaping ([Match]) -> Void) {
         ref.child("Accounts").child(uid).child("matches").observeSingleEvent(of: .value) { s in
             var items: [Match] = []
@@ -205,22 +207,12 @@ final class FirebaseService {
                     }
                 }
             }
+            // sort by matchId by default (or by createdAt if you prefer)
             completion(items.sorted { $0.matchId < $1.matchId })
         }
     }
 
-    /// One-sided add (only under uid)
-    func addMatch(for uid: String, opponentUid: String, p1: Int, p2: Int, completion: @escaping (Bool) -> Void) {
-        let refMatch = ref.child("Accounts").child(uid).child("matches").childByAutoId()
-        let m: [String: Any] = [
-            "matchId": refMatch.key ?? UUID().uuidString,
-            "opponentUserId": opponentUid,
-            "scores": ["player1": p1, "player2": p2],
-            "createdAt": ServerValue.timestamp()
-        ]
-        refMatch.setValue(m) { err, _ in completion(err == nil) }
-    }
-
+    /// Update a single match entry under /Accounts/{uid}/matches/{matchId}/scores
     func updateMatch(for uid: String,
                      matchId: String,
                      p1: Int,
@@ -236,8 +228,8 @@ final class FirebaseService {
             completion(err == nil)
         }
     }
-    
-    /// Two-sided add via multi-path update (now supports optional title)
+
+    /// Create a match for both players and store reciprocal keys so we can delete both later.
     func addMatchBothSides(myUid: String,
                            opponentUid: String,
                            myScore: Int,
@@ -251,12 +243,14 @@ final class FirebaseService {
         var myMatch: [String: Any] = [
             "opponentUserId": opponentUid,
             "scores": ["player1": myScore, "player2": oppScore],
-            "createdAt": ServerValue.timestamp()
+            "createdAt": ServerValue.timestamp(),
+            "reciprocalMatchId": oppKey
         ]
         var oppMatch: [String: Any] = [
             "opponentUserId": myUid,
             "scores": ["player1": oppScore, "player2": myScore],
-            "createdAt": ServerValue.timestamp()
+            "createdAt": ServerValue.timestamp(),
+            "reciprocalMatchId": myKey
         ]
         if let t = title, !t.isEmpty {
             myMatch["title"] = t
@@ -264,8 +258,8 @@ final class FirebaseService {
         }
 
         let updates: [String: Any] = [
-            "/Accounts/\(myUid)/matches/\(myKey)" : myMatch,
-            "/Accounts/\(opponentUid)/matches/\(oppKey)" : oppMatch
+            "/Accounts/\(myUid)/matches/\(myKey)"      : myMatch,
+            "/Accounts/\(opponentUid)/matches/\(oppKey)": oppMatch
         ]
 
         ref.updateChildValues(updates) { error, _ in
@@ -273,7 +267,94 @@ final class FirebaseService {
         }
     }
 
-    /// Optional global Scores collection now includes title
+    /// Delete your match and the opponent's mirrored copy.
+    /// Works best if `reciprocalMatchId` exists; otherwise it falls back to searching by createdAt.
+    func deleteMatchBothSides(myUid: String,
+                              myMatchId: String,
+                              completion: @escaping (Bool, String?) -> Void) {
+        let myRef = ref.child("Accounts").child(myUid).child("matches").child(myMatchId)
+        myRef.observeSingleEvent(of: .value) { [weak self] snap in
+            guard let self = self else { return }
+            guard let dict = snap.value as? [String: Any] else {
+                completion(false, "Match not found.")
+                return
+            }
+
+            let opponentUid = dict["opponentUserId"] as? String ?? ""
+            let reciprocal  = dict["reciprocalMatchId"] as? String
+
+            // Parse createdAt for fallback matching
+            let myCreatedAt: TimeInterval? = {
+                if let t = dict["createdAt"] as? TimeInterval { return t }
+                if let n = dict["createdAt"] as? NSNumber { return n.doubleValue }
+                return nil
+            }()
+
+            // If we know the opponent's key, delete both atomically
+            if let oppKey = reciprocal, !opponentUid.isEmpty {
+                let updates: [String: Any] = [
+                    "/Accounts/\(myUid)/matches/\(myMatchId)"    : NSNull(),
+                    "/Accounts/\(opponentUid)/matches/\(oppKey)" : NSNull()
+                ]
+                self.ref.updateChildValues(updates) { err, _ in
+                    completion(err == nil, err?.localizedDescription)
+                }
+                return
+            }
+
+            // Fallback: search opponent's matches
+            guard !opponentUid.isEmpty else {
+                myRef.removeValue { err, _ in completion(err == nil, err?.localizedDescription) }
+                return
+            }
+
+            self.ref.child("Accounts").child(opponentUid).child("matches")
+                .observeSingleEvent(of: .value) { oppSnap in
+                    var candidateKey: String?
+
+                    for child in oppSnap.children {
+                        guard
+                            let s = child as? DataSnapshot,
+                            let d = s.value as? [String: Any]
+                        else { continue }
+
+                        // 1) Best: they reference us
+                        if let rec = d["reciprocalMatchId"] as? String, rec == myMatchId {
+                            candidateKey = s.key; break
+                        }
+
+                        // 2) Same createdAt (likely written in same update)
+                        if let theirNum = d["createdAt"] as? NSNumber, let mine = myCreatedAt,
+                           abs(theirNum.doubleValue - mine) < 0.5 {
+                            candidateKey = s.key; break
+                        }
+                        if let theirTs = d["createdAt"] as? TimeInterval, let mine = myCreatedAt,
+                           abs(theirTs - mine) < 0.5 {
+                            candidateKey = s.key; break
+                        }
+                    }
+
+                    var updates: [String: Any] = [
+                        "/Accounts/\(myUid)/matches/\(myMatchId)" : NSNull()
+                    ]
+                    if let oppKey = candidateKey {
+                        updates["/Accounts/\(opponentUid)/matches/\(oppKey)"] = NSNull()
+                    }
+
+                    self.ref.updateChildValues(updates) { err, _ in
+                        if let err = err {
+                            completion(false, err.localizedDescription)
+                        } else if candidateKey == nil {
+                            completion(true, "Deleted your copy. Opponent copy not found.")
+                        } else {
+                            completion(true, nil)
+                        }
+                    }
+                }
+        }
+    }
+
+    // MARK: - Optional global Scores collection (keeps a separate log)
     func createScore(player1Id: String,
                      player2Id: String,
                      player1Score: Int,
@@ -291,69 +372,6 @@ final class FirebaseService {
         ]
         if let t = title, !t.isEmpty { payload["title"] = t }
 
-        newRef.setValue(payload) { error, _ in
-            if let error = error { completion(.failure(error)); return }
-            // If your ScoreModel has a `title` property, initialize it accordingly.
-            let model = ScoreModel(
-                id: payload["id"] as! String,
-                player1Id: player1Id,
-                player2Id: player2Id,
-                player1Score: player1Score,
-                player2Score: player2Score,
-                createdAt: payload["createdAt"] as! TimeInterval
-                // + title if you added it to the model
-            )
-            completion(.success(model))
-        }
-    }
-
-    
-    /// Two-sided add via multi-path update (recommended for ScoreList).
-    func addMatchBothSides(myUid: String,
-                           opponentUid: String,
-                           myScore: Int,
-                           oppScore: Int,
-                           completion: @escaping (Bool, String?) -> Void) {
-
-        let myKey  = ref.child("Accounts").child(myUid).child("matches").childByAutoId().key ?? UUID().uuidString
-        let oppKey = ref.child("Accounts").child(opponentUid).child("matches").childByAutoId().key ?? UUID().uuidString
-
-        let myMatch: [String: Any] = [
-            "opponentUserId": opponentUid,
-            "scores": ["player1": myScore, "player2": oppScore],
-            "createdAt": ServerValue.timestamp()
-        ]
-        let oppMatch: [String: Any] = [
-            "opponentUserId": myUid,
-            "scores": ["player1": oppScore, "player2": myScore],
-            "createdAt": ServerValue.timestamp()
-        ]
-
-        let updates: [String: Any] = [
-            "/Accounts/\(myUid)/matches/\(myKey)" : myMatch,
-            "/Accounts/\(opponentUid)/matches/\(oppKey)" : oppMatch
-        ]
-
-        ref.updateChildValues(updates) { error, _ in
-            completion(error == nil, error?.localizedDescription)
-        }
-    }
-
-    // MARK: - Optional global Scores collection
-    func createScore(player1Id: String,
-                     player2Id: String,
-                     player1Score: Int,
-                     player2Score: Int,
-                     completion: @escaping (Result<ScoreModel, Error>) -> Void) {
-        let newRef = ref.child("Scores").childByAutoId()
-        let payload: [String: Any] = [
-            "id": newRef.key ?? UUID().uuidString,
-            "player1Id": player1Id,
-            "player2Id": player2Id,
-            "player1Score": player1Score,
-            "player2Score": player2Score,
-            "createdAt": Date().timeIntervalSince1970
-        ]
         newRef.setValue(payload) { error, _ in
             if let error = error { completion(.failure(error)); return }
             let model = ScoreModel(

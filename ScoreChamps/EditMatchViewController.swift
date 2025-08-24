@@ -11,11 +11,11 @@ final class EditMatchViewController: UIViewController {
     var match: Match!
 
     // Callbacks so ScoreList can refresh after dismiss
-    var onSaved: (() -> Void)?
+    var onSaved:  (() -> Void)?
     var onClosed: (() -> Void)?
 
     // MARK: - Outlets (connect these in storyboard)
-    @IBOutlet weak var titleLabel: UILabel!        // <-- NEW: shows match title
+    @IBOutlet weak var titleLabel: UILabel!        // shows match title (optional)
     @IBOutlet weak var opponentLabel: UILabel!
 
     @IBOutlet weak var yourScoreLabel: UILabel!
@@ -26,9 +26,10 @@ final class EditMatchViewController: UIViewController {
     @IBOutlet weak var theirMinusButton: UIButton!
     @IBOutlet weak var theirPlusButton: UIButton!
 
-    // Save / Close buttons in the view (since no nav bar)
+    // In-view buttons (no nav bar)
     @IBOutlet weak var saveButton: UIButton!
     @IBOutlet weak var cancelButton: UIButton!
+    @IBOutlet weak var deleteButton: UIButton!     // wire this up in storyboard
 
     // MARK: - State
     private var yourScore: Int = 0
@@ -41,6 +42,12 @@ final class EditMatchViewController: UIViewController {
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        guard match != nil else {
+            assertionFailure("EditMatchViewController requires match")
+            dismiss(animated: true)
+            return
+        }
 
         // Prefill scores from the match
         yourScore  = match.player1
@@ -68,9 +75,11 @@ final class EditMatchViewController: UIViewController {
             }
         }
 
-        // Buttons text (optional polish)
+        // Buttons text / style (optional)
         saveButton.setTitle("Save", for: .normal)
         cancelButton.setTitle("Close", for: .normal)
+        deleteButton.setTitle("Delete", for: .normal)
+        deleteButton.setTitleColor(.systemRed, for: .normal)
     }
 
     private func updateScoreLabels() {
@@ -120,5 +129,45 @@ final class EditMatchViewController: UIViewController {
     @IBAction func cancelTapped(_ sender: UIButton) {
         onClosed?()
         dismiss(animated: true)
+    }
+
+    // MARK: - Delete (both sides)
+    @IBAction func deleteTapped(_ sender: UIButton) {
+        guard !currentUserId.isEmpty else { return }
+
+        let alert = UIAlertController(
+            title: "Delete Score?",
+            message: "This will remove the score from both sides.",
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        alert.addAction(UIAlertAction(title: "Delete", style: .destructive, handler: { [weak self] _ in
+            guard let self = self else { return }
+            FirebaseService.shared.deleteMatchBothSides(
+                myUid: self.currentUserId,
+                myMatchId: self.match.matchId
+            ) { ok, msg in
+                DispatchQueue.main.async {
+                    if ok {
+                        if let note = msg, !note.isEmpty {
+                            let a = UIAlertController(title: "Deleted", message: note, preferredStyle: .alert)
+                            a.addAction(UIAlertAction(title: "OK", style: .default, handler: { _ in
+                                self.onSaved?()
+                                self.dismiss(animated: true)
+                            }))
+                            self.present(a, animated: true)
+                        } else {
+                            self.onSaved?()
+                            self.dismiss(animated: true)
+                        }
+                    } else {
+                        let a = UIAlertController(title: "Error", message: msg ?? "Could not delete score.", preferredStyle: .alert)
+                        a.addAction(UIAlertAction(title: "OK", style: .default))
+                        self.present(a, animated: true)
+                    }
+                }
+            }
+        }))
+        present(alert, animated: true)
     }
 }
