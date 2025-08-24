@@ -215,6 +215,7 @@
                                     <fontDescription key="titleFontDescription" name="STIXTwoMath-Regular" family="STIX Two Math" pointSize="20"/>
                                 </buttonConfiguration>
                                 <connections>
+                                    <action selector="logoutTapped:" destination="pZr-lR-edI" eventType="touchUpInside" id="F8C-dD-nvK"/>
                                     <segue destination="BYZ-38-t0r" kind="show" id="10t-d8-awZ"/>
                                 </connections>
                             </button>
@@ -796,10 +797,10 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="SO3-Dr-nrO"/>
+        <segue reference="1gA-SH-MlM"/>
         <segue reference="lng-2J-B4x"/>
         <segue reference="hss-DY-NPY"/>
-        <segue reference="vAe-tG-PaI"/>
+        <segue reference="10t-d8-awZ"/>
     </inferredMetricsTieBreakers>
     <resources>
         <systemColor name="systemBackgroundColor">

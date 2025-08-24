@@ -106,19 +106,23 @@ final class EditMatchViewController: UIViewController {
     // MARK: - Save / Close
     @IBAction func saveTapped(_ sender: UIButton) {
         guard !currentUserId.isEmpty else { return }
-        FirebaseService.shared.updateMatch(
-            for: currentUserId,
-            matchId: match.matchId,
-            p1: yourScore,
-            p2: theirScore
-        ) { [weak self] ok in
+
+        // ✅ Update *both* users' copies (mirrored) in one write
+        FirebaseService.shared.updateMatchBothSides(
+            myUid: currentUserId,
+            myMatchId: match.matchId,
+            myScore: yourScore,
+            oppScore: theirScore
+        ) { [weak self] ok, msg in
             DispatchQueue.main.async {
                 guard let self = self else { return }
                 if ok {
                     self.onSaved?()
                     self.dismiss(animated: true)
                 } else {
-                    let a = UIAlertController(title: "Error", message: "Could not save score.", preferredStyle: .alert)
+                    let a = UIAlertController(title: "Error",
+                                              message: msg ?? "Could not save score.",
+                                              preferredStyle: .alert)
                     a.addAction(UIAlertAction(title: "OK", style: .default))
                     self.present(a, animated: true)
                 }
@@ -155,13 +159,14 @@ final class EditMatchViewController: UIViewController {
                             preferredStyle: .alert
                         )
                         a.addAction(UIAlertAction(title: "OK", style: .default, handler: { _ in
-                            // You might keep the editor open or close it—closing keeps UX simple
-                            self.onSaved?() // optional refresh when returning
+                            self.onSaved?()
                             self.dismiss(animated: true)
                         }))
                         self.present(a, animated: true)
                     } else {
-                        let a = UIAlertController(title: "Error", message: msg ?? "Could not send request.", preferredStyle: .alert)
+                        let a = UIAlertController(title: "Error",
+                                                  message: msg ?? "Could not send request.",
+                                                  preferredStyle: .alert)
                         a.addAction(UIAlertAction(title: "OK", style: .default))
                         self.present(a, animated: true)
                     }

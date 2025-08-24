@@ -4,11 +4,12 @@
 //
 
 import Foundation
+import FirebaseCore
 import FirebaseDatabase
 
 final class FirebaseService {
     static let shared = FirebaseService()
-    let ref = Database.database().reference()
+    let ref: DatabaseReference = Database.database().reference()
 
     private init() {}
 
@@ -20,22 +21,20 @@ final class FirebaseService {
 
     // MARK: - Users
     func fetchAllUsers(completion: @escaping ([String: UserModel]) -> Void) {
-        ref.child("Accounts").observeSingleEvent(of: .value) { snap in
+        ref.child("Accounts").observeSingleEvent(of: .value) { (snap: DataSnapshot) in
             var map: [String: UserModel] = [:]
-            for child in snap.children {
-                guard
-                    let s = child as? DataSnapshot,
-                    let dict = s.value as? [String: Any],
-                    let u = UserModel(userId: s.key, dict: dict)
-                else { continue }
-                map[s.key] = u
+            for case let s as DataSnapshot in snap.children {
+                if let dict = s.value as? [String: Any],
+                   let u = UserModel(userId: s.key, dict: dict) {
+                    map[s.key] = u
+                }
             }
             completion(map)
         }
     }
 
     func fetchUser(byUserId uid: String, completion: @escaping (UserModel?) -> Void) {
-        ref.child("Accounts").child(uid).observeSingleEvent(of: .value) { s in
+        ref.child("Accounts").child(uid).observeSingleEvent(of: .value) { (s: DataSnapshot) in
             guard let dict = s.value as? [String: Any],
                   let u = UserModel(userId: uid, dict: dict) else { completion(nil); return }
             completion(u)
@@ -72,7 +71,7 @@ final class FirebaseService {
     /// Reads `/Accounts/{uid}/friends` and resolves to `UserModel`s.
     /// Supports both map `{ friendId: true/username/... }` and list `["fid", ...]`.
     func fetchFriends(for userId: String, completion: @escaping ([UserModel]) -> Void) {
-        ref.child("Accounts").child(userId).observeSingleEvent(of: .value) { [weak self] userSnap in
+        ref.child("Accounts").child(userId).observeSingleEvent(of: .value) { [weak self] (userSnap: DataSnapshot) in
             guard let self = self,
                   let userDict = userSnap.value as? [String: Any] else { completion([]); return }
 
@@ -91,14 +90,14 @@ final class FirebaseService {
 
             guard !friendIds.isEmpty else { completion([]); return }
 
-            self.ref.child("Accounts").observeSingleEvent(of: .value) { accountsSnap in
+            self.ref.child("Accounts").observeSingleEvent(of: .value) { (accountsSnap: DataSnapshot) in
                 var out: [UserModel] = []
-                for child in accountsSnap.children {
-                    guard let s = child as? DataSnapshot,
-                          friendIds.contains(s.key),
-                          let dict = s.value as? [String: Any],
-                          let u = UserModel(userId: s.key, dict: dict) else { continue }
-                    out.append(u)
+                for case let s as DataSnapshot in accountsSnap.children {
+                    if friendIds.contains(s.key),
+                       let dict = s.value as? [String: Any],
+                       let u = UserModel(userId: s.key, dict: dict) {
+                        out.append(u)
+                    }
                 }
                 out.sort { a, b in
                     let an = a.name.isEmpty ? (a.username.isEmpty ? a.userId : a.username) : a.name
@@ -151,7 +150,7 @@ final class FirebaseService {
 
     func observeIncomingRequests(for uid: String, handler: @escaping ([FriendRequest]) -> Void) -> DatabaseHandle {
         ref.child("Accounts").child(uid).child("friendRequests").child("incoming")
-            .observe(.value) { snap in
+            .observe(.value) { (snap: DataSnapshot) in
                 var items: [FriendRequest] = []
                 if let dict = snap.value as? [String: Any] {
                     for (_, raw) in dict {
@@ -200,7 +199,7 @@ final class FirebaseService {
 
     /// Read matches under /Accounts/{uid}/matches → [Match]
     func fetchMatches(for uid: String, completion: @escaping ([Match]) -> Void) {
-        ref.child("Accounts").child(uid).child("matches").observeSingleEvent(of: .value) { s in
+        ref.child("Accounts").child(uid).child("matches").observeSingleEvent(of: .value) { (s: DataSnapshot) in
             var items: [Match] = []
             if let dict = s.value as? [String: Any] {
                 for (mid, raw) in dict {
@@ -223,7 +222,79 @@ final class FirebaseService {
         scoresRef.updateChildValues(["player1": p1, "player2": p2]) { err, _ in
             completion(err == nil)
         }
-        // Optionally bump updatedAt, etc.
+    }
+
+    /// NEW: Update both sides of a match in one multi-path write.
+    /// `myScore` / `oppScore` are from *my* perspective.
+    func updateMatchBothSides(myUid: String,
+                              myMatchId: String,
+                              myScore: Int,
+                              oppScore: Int,
+                              completion: @escaping (Bool, String?) -> Void) {
+
+        let myMatchRef = ref.child("Accounts").child(myUid).child("matches").child(myMatchId)
+
+        myMatchRef.observeSingleEvent(of: .value) { [weak self] (snap: DataSnapshot) in
+            guard let self = self else { return }
+            guard let dict = snap.value as? [String: Any] else {
+                completion(false, "Match not found."); return
+            }
+
+            let opponentUid = dict["opponentUserId"] as? String ?? ""
+            let reciprocal  = dict["reciprocalMatchId"] as? String
+
+            func writeBoth(oppMatchId: String) {
+                let updates: [String: Any] = [
+                    "/Accounts/\(myUid)/matches/\(myMatchId)/scores/player1": myScore,
+                    "/Accounts/\(myUid)/matches/\(myMatchId)/scores/player2": oppScore,
+                    "/Accounts/\(opponentUid)/matches/\(oppMatchId)/scores/player1": oppScore,
+                    "/Accounts/\(opponentUid)/matches/\(oppMatchId)/scores/player2": myScore
+                ]
+                self.ref.updateChildValues(updates) { err, _ in
+                    completion(err == nil, err?.localizedDescription)
+                }
+            }
+
+            if let oppKey = reciprocal, !opponentUid.isEmpty {
+                writeBoth(oppMatchId: oppKey)
+                return
+            }
+
+            guard !opponentUid.isEmpty else {
+                // Update mine only
+                myMatchRef.child("scores").updateChildValues(
+                    ["player1": myScore, "player2": oppScore]
+                ) { err, _ in
+                    completion(err == nil, err?.localizedDescription ?? "Updated your copy only.")
+                }
+                return
+            }
+
+            // Fallback: find opponent match by reciprocal back-reference
+            self.ref.child("Accounts").child(opponentUid).child("matches")
+                .observeSingleEvent(of: .value) { (oppSnap: DataSnapshot) in
+                    var oppKey: String?
+
+                    for case let s as DataSnapshot in oppSnap.children {
+                        if let d = s.value as? [String: Any],
+                           let rec = d["reciprocalMatchId"] as? String,
+                           rec == myMatchId {
+                            oppKey = s.key; break
+                        }
+                    }
+
+                    if let oppKey = oppKey {
+                        writeBoth(oppMatchId: oppKey)
+                    } else {
+                        myMatchRef.child("scores").updateChildValues(
+                            ["player1": myScore, "player2": oppScore]
+                        ) { err, _ in
+                            if let err = err { completion(false, err.localizedDescription) }
+                            else { completion(true, "Updated your copy. Opponent copy not found.") }
+                        }
+                    }
+                }
+        }
     }
 
     /// Create a match for both players and store reciprocal keys so we can delete both later.
@@ -269,7 +340,7 @@ final class FirebaseService {
                               myMatchId: String,
                               completion: @escaping (Bool, String?) -> Void) {
         let myRef = ref.child("Accounts").child(myUid).child("matches").child(myMatchId)
-        myRef.observeSingleEvent(of: .value) { [weak self] snap in
+        myRef.observeSingleEvent(of: .value) { [weak self] (snap: DataSnapshot) in
             guard let self = self else { return }
             guard let dict = snap.value as? [String: Any] else {
                 completion(false, "Match not found.")
@@ -302,12 +373,11 @@ final class FirebaseService {
             }
 
             self.ref.child("Accounts").child(opponentUid).child("matches")
-                .observeSingleEvent(of: .value) { oppSnap in
+                .observeSingleEvent(of: .value) { (oppSnap: DataSnapshot) in
                     var candidateKey: String?
 
-                    for child in oppSnap.children {
-                        guard let s = child as? DataSnapshot,
-                              let d = s.value as? [String: Any] else { continue }
+                    for case let s as DataSnapshot in oppSnap.children {
+                        guard let d = s.value as? [String: Any] else { continue }
 
                         if let rec = d["reciprocalMatchId"] as? String, rec == myMatchId {
                             candidateKey = s.key; break
@@ -378,7 +448,7 @@ final class FirebaseService {
                             completion: @escaping (Bool, String?) -> Void) {
 
         let myMatchRef = ref.child("Accounts").child(myUid).child("matches").child(myMatchId)
-        myMatchRef.observeSingleEvent(of: .value) { [weak self] snap in
+        myMatchRef.observeSingleEvent(of: .value) { [weak self] (snap: DataSnapshot) in
             guard let self = self else { return }
             guard let dict = snap.value as? [String: Any] else {
                 completion(false, "Match not found.")
@@ -423,7 +493,7 @@ final class FirebaseService {
     func observeIncomingDeleteRequests(for uid: String,
                                        handler: @escaping ([DeleteRequest]) -> Void) -> DatabaseHandle {
         let incomingRef = ref.child("Accounts").child(uid).child("deleteRequests").child("incoming")
-        return incomingRef.observe(.value) { [weak self] snap in
+        return incomingRef.observe(.value) { [weak self] (snap: DataSnapshot) in
             guard let self = self else { return }
 
             var ids: [String] = []
@@ -437,7 +507,7 @@ final class FirebaseService {
 
             for id in ids {
                 group.enter()
-                self.ref.child("DeleteRequests").child(id).observeSingleEvent(of: .value) { s in
+                self.ref.child("DeleteRequests").child(id).observeSingleEvent(of: .value) { (s: DataSnapshot) in
                     defer { group.leave() }
                     guard let d = s.value as? [String: Any],
                           let r = DeleteRequest(id: s.key, dict: d),
@@ -467,7 +537,7 @@ final class FirebaseService {
                                 completion: @escaping (Bool, String?) -> Void) {
         let reqRef = ref.child("DeleteRequests").child(requestId)
 
-        reqRef.observeSingleEvent(of: .value) { [weak self] s in
+        reqRef.observeSingleEvent(of: .value) { [weak self] (s: DataSnapshot) in
             guard let self = self else { return }
             guard let d = s.value as? [String: Any],
                   var req = DeleteRequest(id: s.key, dict: d) else {
@@ -504,12 +574,12 @@ final class FirebaseService {
                     return
                 }
                 self.ref.child("Accounts").child(req.toUid).child("matches")
-                    .observeSingleEvent(of: .value) { snap in
+                    .observeSingleEvent(of: .value) { (snap: DataSnapshot) in
                         var found: String?
-                        for child in snap.children {
-                            guard let s = child as? DataSnapshot,
-                                  let dict = s.value as? [String: Any] else { continue }
-                            if let rec = dict["reciprocalMatchId"] as? String, rec == req.myMatchId {
+                        for case let s as DataSnapshot in snap.children {
+                            if let dict = s.value as? [String: Any],
+                               let rec = dict["reciprocalMatchId"] as? String,
+                               rec == req.myMatchId {
                                 found = s.key; break
                             }
                         }
@@ -531,11 +601,10 @@ final class FirebaseService {
                         "/Accounts/\(req.toUid)/deleteRequests/incoming/\(requestId)" : NSNull(),
                         "/Accounts/\(req.fromUid)/deleteRequests/outgoing/\(requestId)": NSNull()
                     ]
-                    phase2["/Accounts/\(req.fromUid)/matches/\(req.myMatchId)"] = NSNull() // may be denied
+                    phase2["/Accounts/\(req.fromUid)/matches/\(req.myMatchId)"] = NSNull() // may be denied by rules
 
                     self.ref.updateChildValues(phase2) { err, _ in
-                        if let err = err {
-                            // Most likely a permission error deleting the other user's match.
+                        if let _ = err {
                             completion(true, "Accepted. Your copy was removed. The other side will delete when they open the app.")
                         } else {
                             completion(true, nil)
@@ -547,7 +616,7 @@ final class FirebaseService {
                     proceedToPhase2()
                 } else {
                     self.ref.updateChildValues(phase1) { _, _ in
-                        // Ignore errors (already deleted, etc.) and continue
+                        // Ignore errors (already deleted) and continue
                         proceedToPhase2()
                     }
                 }

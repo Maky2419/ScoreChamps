@@ -2,8 +2,6 @@
 //  ScoreList.swift
 //  ScoreChamps
 //
-//  Created by Ahsan Kalam on 2025-05-21.
-//
 
 import UIKit
 
@@ -44,6 +42,7 @@ final class ScoreList: UIViewController {
         loadMatches()
     }
 
+    // MARK: - Actions
     @IBAction func newScoreTapped(_ sender: Any) {
         let sb = UIStoryboard(name: "Main", bundle: nil)
         guard let vc = sb.instantiateViewController(withIdentifier: "NewScoreViewController") as? NewScoreViewController else {
@@ -56,6 +55,19 @@ final class ScoreList: UIViewController {
         present(vc, animated: true)
     }
 
+    // Optional: if you have a "Log out" button wired to this IBAction
+    @IBAction func logoutTapped(_ sender: Any) {
+        FirebaseService.shared.currentUserId = nil
+
+        // If we were pushed: pop; if presented: dismiss.
+        if let nav = navigationController {
+            nav.popToRootViewController(animated: true)
+        } else {
+            dismiss(animated: true)
+        }
+    }
+
+    // MARK: - Data
     private func loadMatches() {
         guard !currentUserId.isEmpty else { return }
         FirebaseService.shared.fetchMatches(for: currentUserId) { [weak self] list in
@@ -115,7 +127,7 @@ extension ScoreList: UITableViewDataSource, UITableViewDelegate {
         cell.detailTextLabel?.text = "You \(m.player1) – \(m.player2)"
         cell.accessoryType = .disclosureIndicator
 
-        // Resolve opponent name asynchronously
+        // Resolve opponent name asynchronously (protect against reuse)
         user(for: m.opponentUserId) { [weak tableView] user in
             DispatchQueue.main.async {
                 guard

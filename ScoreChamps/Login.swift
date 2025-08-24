@@ -11,22 +11,38 @@ class Login: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         hideKeyboardWhenTappedAround()
+
+        // Preload users so local validation is instant
         FirebaseService.shared.fetchAllUsers { [weak self] map in
             self?.users = map
             print("Loaded users: \(map.count)")
         }
     }
 
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        // 👇 Auto-skip login if we already have a session
+        if let uid = FirebaseService.shared.currentUserId, !uid.isEmpty {
+            // Make sure the segue "goToNext" exists from Login -> ScoreList in storyboard.
+            performSegue(withIdentifier: "goToNext", sender: self)
+        }
+    }
+
     @IBAction func LoginBtnActivated(_ sender: Any) {
-        guard let u = UsernamesText.text, let p = PasswordText.text, !u.isEmpty, !p.isEmpty else {
+        guard
+            let u = UsernamesText.text, !u.isEmpty,
+            let p = PasswordText.text, !p.isEmpty
+        else {
             alert("Error", "Please enter both username and password.")
             return
         }
 
         if let hit = users.first(where: { $0.value.username == u && $0.value.password == p }) {
+            // Persist session for next launch
             FirebaseService.shared.currentUserId = hit.key
             print("Login success for \(hit.value.username). Friends=\(hit.value.friends.count)")
-            performSegue(withIdentifier: "goToNext", sender: self) // to ScoreList or Home
+            performSegue(withIdentifier: "goToNext", sender: self) // to ScoreList
         } else {
             alert("Failed", "Invalid username or password.")
         }
