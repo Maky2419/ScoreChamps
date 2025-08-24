@@ -131,37 +131,37 @@ final class EditMatchViewController: UIViewController {
         dismiss(animated: true)
     }
 
-    // MARK: - Delete (both sides)
+    // MARK: - Delete flow = send request (opponent must accept)
     @IBAction func deleteTapped(_ sender: UIButton) {
         guard !currentUserId.isEmpty else { return }
 
         let alert = UIAlertController(
-            title: "Delete Score?",
-            message: "This will remove the score from both sides.",
+            title: "Request Deletion?",
+            message: "This will notify your opponent. The match will be deleted only after they accept.",
             preferredStyle: .alert
         )
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        alert.addAction(UIAlertAction(title: "Delete", style: .destructive, handler: { [weak self] _ in
+        alert.addAction(UIAlertAction(title: "Send Request", style: .destructive, handler: { [weak self] _ in
             guard let self = self else { return }
-            FirebaseService.shared.deleteMatchBothSides(
+            FirebaseService.shared.requestDeleteMatch(
                 myUid: self.currentUserId,
                 myMatchId: self.match.matchId
             ) { ok, msg in
                 DispatchQueue.main.async {
                     if ok {
-                        if let note = msg, !note.isEmpty {
-                            let a = UIAlertController(title: "Deleted", message: note, preferredStyle: .alert)
-                            a.addAction(UIAlertAction(title: "OK", style: .default, handler: { _ in
-                                self.onSaved?()
-                                self.dismiss(animated: true)
-                            }))
-                            self.present(a, animated: true)
-                        } else {
-                            self.onSaved?()
+                        let a = UIAlertController(
+                            title: "Request Sent",
+                            message: "We’ll delete the match once your opponent accepts.",
+                            preferredStyle: .alert
+                        )
+                        a.addAction(UIAlertAction(title: "OK", style: .default, handler: { _ in
+                            // You might keep the editor open or close it—closing keeps UX simple
+                            self.onSaved?() // optional refresh when returning
                             self.dismiss(animated: true)
-                        }
+                        }))
+                        self.present(a, animated: true)
                     } else {
-                        let a = UIAlertController(title: "Error", message: msg ?? "Could not delete score.", preferredStyle: .alert)
+                        let a = UIAlertController(title: "Error", message: msg ?? "Could not send request.", preferredStyle: .alert)
                         a.addAction(UIAlertAction(title: "OK", style: .default))
                         self.present(a, animated: true)
                     }

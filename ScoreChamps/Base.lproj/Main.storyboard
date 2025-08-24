@@ -312,26 +312,23 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ucD-31-XDP">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ucD-31-XDP">
                                 <rect key="frame" x="75" y="252" width="243" height="21"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="21" id="msu-a3-n7H"/>
-                                </constraints>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" name="STIXTwoMath-Regular" family="STIX Two Math" pointSize="25"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bJb-Y2-PMv">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bJb-Y2-PMv">
                                 <rect key="frame" x="234" y="336" width="81" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" name="STIXTwoMath-Regular" family="STIX Two Math" pointSize="25"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zxF-Ey-mSr">
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zxF-Ey-mSr">
                                 <rect key="frame" x="234" y="413" width="78" height="81"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="78" id="5uB-K8-z4E"/>
-                                </constraints>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="filled" title="-1">
                                     <fontDescription key="titleFontDescription" name="STIXTwoMath-Regular" family="STIX Two Math" pointSize="25"/>
@@ -340,8 +337,9 @@
                                     <action selector="theirMinusTapped:" destination="Whg-sn-nqu" eventType="touchUpInside" id="cFH-St-MLM"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bEC-Ht-Lxp">
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bEC-Ht-Lxp">
                                 <rect key="frame" x="221" y="710" width="72" height="39"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="filled" title="Save">
                                     <fontDescription key="titleFontDescription" name="STIXTwoMath-Regular" family="STIX Two Math" pointSize="25"/>
@@ -350,11 +348,9 @@
                                     <action selector="saveTapped:" destination="Whg-sn-nqu" eventType="touchUpInside" id="vtb-o8-w6c"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aHv-rs-clc">
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aHv-rs-clc">
                                 <rect key="frame" x="107" y="709" width="77" height="39"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="39" id="pxi-jT-ANC"/>
-                                </constraints>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="filled" title="Back">
                                     <fontDescription key="titleFontDescription" name="STIXTwoMath-Regular" family="STIX Two Math" pointSize="25"/>
@@ -363,27 +359,23 @@
                                     <action selector="cancelTapped:" destination="Whg-sn-nqu" eventType="touchUpInside" id="cSa-or-nzi"/>
                                 </connections>
                             </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Glk-3e-mbw">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Glk-3e-mbw">
                                 <rect key="frame" x="24" y="177" width="269" height="21"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="21" id="Xsv-uv-HZh"/>
-                                </constraints>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" name="STIXTwoMath-Regular" family="STIX Two Math" pointSize="25"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WhA-yV-7z4">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WhA-yV-7z4">
                                 <rect key="frame" x="50" y="336" width="79" height="21"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="21" id="2MM-1U-9t8"/>
-                                    <constraint firstAttribute="width" constant="79" id="oD8-P8-ebb"/>
-                                </constraints>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" name="STIXTwoMath-Regular" family="STIX Two Math" pointSize="25"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KRr-rm-Z2L">
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KRr-rm-Z2L">
                                 <rect key="frame" x="50" y="413" width="79" height="80"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="filled" title="- 1">
                                     <fontDescription key="titleFontDescription" name="STIXTwoMath-Regular" family="STIX Two Math" pointSize="25"/>
@@ -392,8 +384,9 @@
                                     <action selector="yourMinusTapped:" destination="Whg-sn-nqu" eventType="touchUpInside" id="XeX-s6-57Y"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xRU-T1-ZHc">
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xRU-T1-ZHc">
                                 <rect key="frame" x="50" y="551" width="79" height="80"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="filled" title="+1">
                                     <fontDescription key="titleFontDescription" name="STIXTwoMath-Regular" family="STIX Two Math" pointSize="25"/>
@@ -402,11 +395,9 @@
                                     <action selector="yourPlusTapped:" destination="Whg-sn-nqu" eventType="touchUpInside" id="nF1-D4-r6J"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Jrw-Sc-oCM">
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Jrw-Sc-oCM">
                                 <rect key="frame" x="234" y="551" width="80" height="80"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="80" id="NrL-hg-TmN"/>
-                                </constraints>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="filled" title="+1">
                                     <fontDescription key="titleFontDescription" name="STIXTwoMath-Regular" family="STIX Two Math" pointSize="25"/>
@@ -415,8 +406,9 @@
                                     <action selector="theirPlusTapped:" destination="Whg-sn-nqu" eventType="touchUpInside" id="NmC-Qi-oQC"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tGg-Cp-WL6">
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tGg-Cp-WL6">
                                 <rect key="frame" x="221" y="177" width="156" height="39"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="gray" title="Delete Score">
                                     <fontDescription key="titleFontDescription" name="STIXTwoMath-Regular" family="STIX Two Math" pointSize="25"/>
@@ -428,40 +420,6 @@
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="wTY-gA-M1I"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                        <constraints>
-                            <constraint firstItem="WhA-yV-7z4" firstAttribute="baseline" secondItem="bJb-Y2-PMv" secondAttribute="baseline" id="2Cg-qS-LfO"/>
-                            <constraint firstItem="Glk-3e-mbw" firstAttribute="trailing" secondItem="bEC-Ht-Lxp" secondAttribute="trailing" id="54b-d4-OFp"/>
-                            <constraint firstItem="aHv-rs-clc" firstAttribute="leading" secondItem="wTY-gA-M1I" secondAttribute="leading" constant="107" id="DMd-Vn-Sf7"/>
-                            <constraint firstItem="Glk-3e-mbw" firstAttribute="top" secondItem="tGg-Cp-WL6" secondAttribute="top" id="Dj6-hj-lSN"/>
-                            <constraint firstItem="WhA-yV-7z4" firstAttribute="trailing" secondItem="KRr-rm-Z2L" secondAttribute="trailing" id="G0y-Zf-dAl"/>
-                            <constraint firstItem="Jrw-Sc-oCM" firstAttribute="top" secondItem="zxF-Ey-mSr" secondAttribute="bottom" constant="57" id="GiM-ee-fEa"/>
-                            <constraint firstItem="KRr-rm-Z2L" firstAttribute="trailing" secondItem="xRU-T1-ZHc" secondAttribute="trailing" id="K2H-kQ-LAc"/>
-                            <constraint firstItem="WhA-yV-7z4" firstAttribute="leading" secondItem="wTY-gA-M1I" secondAttribute="leading" constant="50" id="KI1-uL-R0x"/>
-                            <constraint firstItem="ucD-31-XDP" firstAttribute="top" secondItem="Glk-3e-mbw" secondAttribute="bottom" constant="54" id="MVq-Ml-Cow"/>
-                            <constraint firstItem="wTY-gA-M1I" firstAttribute="bottom" secondItem="aHv-rs-clc" secondAttribute="bottom" constant="36" id="Mop-Q4-bxG"/>
-                            <constraint firstItem="ucD-31-XDP" firstAttribute="centerX" secondItem="sXI-ax-Lkr" secondAttribute="centerX" id="Q5g-tq-DgJ"/>
-                            <constraint firstItem="Glk-3e-mbw" firstAttribute="leading" secondItem="wTY-gA-M1I" secondAttribute="leading" constant="24" id="Q5z-Pq-T0d"/>
-                            <constraint firstItem="bEC-Ht-Lxp" firstAttribute="top" secondItem="Jrw-Sc-oCM" secondAttribute="bottom" constant="79" id="Qm6-zY-P8x"/>
-                            <constraint firstItem="xRU-T1-ZHc" firstAttribute="baseline" secondItem="Jrw-Sc-oCM" secondAttribute="baseline" id="Shf-E8-vA4"/>
-                            <constraint firstItem="ucD-31-XDP" firstAttribute="leading" secondItem="wTY-gA-M1I" secondAttribute="leading" constant="75" id="X8t-Qb-Txe"/>
-                            <constraint firstItem="KRr-rm-Z2L" firstAttribute="leading" secondItem="xRU-T1-ZHc" secondAttribute="leading" id="ZWn-zK-vQX"/>
-                            <constraint firstItem="KRr-rm-Z2L" firstAttribute="centerY" secondItem="zxF-Ey-mSr" secondAttribute="centerY" id="aKT-Y3-f2a"/>
-                            <constraint firstItem="wTY-gA-M1I" firstAttribute="trailing" secondItem="bJb-Y2-PMv" secondAttribute="trailing" constant="78" id="bAH-fa-zFa"/>
-                            <constraint firstItem="WhA-yV-7z4" firstAttribute="top" secondItem="ucD-31-XDP" secondAttribute="bottom" constant="63" id="be6-RT-Ccz"/>
-                            <constraint firstItem="xRU-T1-ZHc" firstAttribute="top" secondItem="KRr-rm-Z2L" secondAttribute="bottom" constant="58" id="dKJ-BI-3G1"/>
-                            <constraint firstItem="tGg-Cp-WL6" firstAttribute="leading" secondItem="bEC-Ht-Lxp" secondAttribute="leading" id="dr6-L7-AcC"/>
-                            <constraint firstItem="tGg-Cp-WL6" firstAttribute="leading" secondItem="wTY-gA-M1I" secondAttribute="leading" constant="221" id="eCv-ww-wj8"/>
-                            <constraint firstItem="KRr-rm-Z2L" firstAttribute="top" secondItem="zxF-Ey-mSr" secondAttribute="top" id="g97-h1-fhL"/>
-                            <constraint firstItem="WhA-yV-7z4" firstAttribute="firstBaseline" secondItem="bJb-Y2-PMv" secondAttribute="firstBaseline" id="gIp-YH-crd"/>
-                            <constraint firstItem="KRr-rm-Z2L" firstAttribute="top" secondItem="WhA-yV-7z4" secondAttribute="bottom" constant="56" id="gOW-zg-iOb"/>
-                            <constraint firstItem="bJb-Y2-PMv" firstAttribute="leading" secondItem="zxF-Ey-mSr" secondAttribute="leading" id="ida-a6-oED"/>
-                            <constraint firstItem="wTY-gA-M1I" firstAttribute="trailing" secondItem="zxF-Ey-mSr" secondAttribute="trailing" constant="81" id="mRr-3K-lhx"/>
-                            <constraint firstItem="Glk-3e-mbw" firstAttribute="top" secondItem="wTY-gA-M1I" secondAttribute="top" constant="59" id="mtM-0k-dP6"/>
-                            <constraint firstItem="WhA-yV-7z4" firstAttribute="leading" secondItem="KRr-rm-Z2L" secondAttribute="leading" id="vTs-tw-KuR"/>
-                            <constraint firstItem="bJb-Y2-PMv" firstAttribute="centerX" secondItem="Jrw-Sc-oCM" secondAttribute="centerX" id="wPd-6i-fQl"/>
-                            <constraint firstItem="zxF-Ey-mSr" firstAttribute="leading" secondItem="Jrw-Sc-oCM" secondAttribute="leading" id="xYc-DG-ZyP"/>
-                            <constraint firstItem="aHv-rs-clc" firstAttribute="top" secondItem="xRU-T1-ZHc" secondAttribute="bottom" constant="78" id="zRd-kv-An3"/>
-                        </constraints>
                     </view>
                     <connections>
                         <outlet property="cancelButton" destination="aHv-rs-clc" id="fUk-y6-Ziv"/>
