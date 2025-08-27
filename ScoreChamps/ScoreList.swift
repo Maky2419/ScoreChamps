@@ -57,14 +57,7 @@ final class ScoreList: UIViewController {
 
     // Optional: if you have a "Log out" button wired to this IBAction
     @IBAction func logoutTapped(_ sender: Any) {
-        FirebaseService.shared.currentUserId = nil
-
-        // If we were pushed: pop; if presented: dismiss.
-        if let nav = navigationController {
-            nav.popToRootViewController(animated: true)
-        } else {
-            dismiss(animated: true)
-        }
+        AppRouter.goToLogin()
     }
 
     // MARK: - Data
