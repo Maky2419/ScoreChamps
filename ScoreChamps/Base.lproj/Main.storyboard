@@ -306,17 +306,40 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="Xg8-KJ-o6H">
-                                <rect key="frame" x="16" y="91" width="361" height="693"/>
+                                <rect key="frame" x="16" y="159" width="361" height="625"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="625" id="PWH-uN-jOa"/>
+                                </constraints>
                             </tableView>
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xzb-6x-4Qs">
+                                <rect key="frame" x="16" y="79" width="103" height="49"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="filled" title="Back">
+                                    <fontDescription key="titleFontDescription" name="STIXTwoMath-Regular" family="STIX Two Math" pointSize="25"/>
+                                </buttonConfiguration>
+                                <connections>
+                                    <segue destination="pZr-lR-edI" kind="show" id="aYJ-C2-WjQ"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Please Select a friend:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5qt-r0-MAQ">
+                                <rect key="frame" x="149" y="91" width="228" height="25"/>
+                                <fontDescription key="fontDescription" name="STIXTwoMath-Regular" family="STIX Two Math" pointSize="25"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="eTK-0t-GQx"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="Xg8-KJ-o6H" firstAttribute="top" secondItem="eTK-0t-GQx" secondAttribute="top" constant="32" id="INo-ea-l7I"/>
-                            <constraint firstItem="eTK-0t-GQx" firstAttribute="bottom" secondItem="Xg8-KJ-o6H" secondAttribute="bottom" constant="34" id="IW1-Fz-QX6"/>
-                            <constraint firstItem="Xg8-KJ-o6H" firstAttribute="leading" secondItem="9WE-4c-tnD" secondAttribute="leadingMargin" id="R7J-gV-pCP"/>
-                            <constraint firstItem="Xg8-KJ-o6H" firstAttribute="trailing" secondItem="9WE-4c-tnD" secondAttribute="trailingMargin" id="qNq-AE-KAX"/>
+                            <constraint firstItem="5qt-r0-MAQ" firstAttribute="trailing" secondItem="9WE-4c-tnD" secondAttribute="trailingMargin" id="JYi-RN-Bgj"/>
+                            <constraint firstItem="xzb-6x-4Qs" firstAttribute="baseline" secondItem="5qt-r0-MAQ" secondAttribute="baseline" id="OLV-sK-1l9"/>
+                            <constraint firstItem="5qt-r0-MAQ" firstAttribute="trailing" secondItem="Xg8-KJ-o6H" secondAttribute="trailing" id="Ozh-Zr-dhH"/>
+                            <constraint firstItem="eTK-0t-GQx" firstAttribute="bottom" secondItem="Xg8-KJ-o6H" secondAttribute="bottom" constant="34" id="PbW-JD-9dx"/>
+                            <constraint firstItem="Xg8-KJ-o6H" firstAttribute="top" secondItem="xzb-6x-4Qs" secondAttribute="bottom" constant="31" id="Wso-Cx-lFP"/>
+                            <constraint firstItem="xzb-6x-4Qs" firstAttribute="leading" secondItem="Xg8-KJ-o6H" secondAttribute="leading" id="Wsz-zx-TUK"/>
+                            <constraint firstItem="5qt-r0-MAQ" firstAttribute="leading" secondItem="xzb-6x-4Qs" secondAttribute="trailing" constant="30" id="hPS-Un-LyL"/>
+                            <constraint firstItem="xzb-6x-4Qs" firstAttribute="leading" secondItem="9WE-4c-tnD" secondAttribute="leadingMargin" id="mAn-Pg-sou"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="fP1-q7-2s4"/>
@@ -548,7 +571,7 @@
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1eP-Ay-SRo">
-                                <rect key="frame" x="132" y="640" width="104" height="39"/>
+                                <rect key="frame" x="144" y="644" width="104" height="39"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="filled">
                                     <attributedString key="attributedTitle">
@@ -565,23 +588,14 @@
                                     <segue destination="pZr-lR-edI" kind="show" identifier="goToNext" id="VPy-oF-XWV"/>
                                 </connections>
                             </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Login here" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nlm-ey-mok">
-                                <rect key="frame" x="97" y="153" width="195" height="34"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="34" id="Qya-vC-aGW"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" name="STIXTwoMath-Regular" family="STIX Two Math" pointSize="30"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Dont have a account Sign up here " textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NRt-ta-6ra">
-                                <rect key="frame" x="72" y="501" width="289" height="20"/>
+                                <rect key="frame" x="52" y="501" width="289" height="20"/>
                                 <fontDescription key="fontDescription" name="STIXTwoMath-Regular" family="STIX Two Math" pointSize="20"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mN2-y4-cQI">
-                                <rect key="frame" x="132" y="565" width="104" height="39"/>
+                                <rect key="frame" x="144" y="567" width="104" height="39"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="tinted" title="Sign up">
                                     <fontDescription key="titleFontDescription" name="STIXTwoMath-Regular" family="STIX Two Math" pointSize="25"/>
@@ -613,20 +627,29 @@
                                 </attributedString>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Login here" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nlm-ey-mok">
+                                <rect key="frame" x="99" y="153" width="195" height="34"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="34" id="Qya-vC-aGW"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="STIXTwoMath-Regular" family="STIX Two Math" pointSize="30"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="xQo-2y-Ugd"/>
                         <color key="backgroundColor" red="0.90980392160000001" green="0.87058823529999996" blue="0.81960784310000001" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
-                            <constraint firstItem="xQo-2y-Ugd" firstAttribute="bottom" secondItem="1eP-Ay-SRo" secondAttribute="bottom" constant="139" id="1Hz-So-8Y1"/>
+                            <constraint firstItem="xQo-2y-Ugd" firstAttribute="bottom" secondItem="1eP-Ay-SRo" secondAttribute="bottom" constant="135" id="1Hz-So-8Y1"/>
                             <constraint firstItem="cAC-c1-FBg" firstAttribute="leading" secondItem="tl0-fq-nzw" secondAttribute="trailing" constant="19" id="2hV-uY-nJS"/>
-                            <constraint firstItem="mN2-y4-cQI" firstAttribute="top" secondItem="NRt-ta-6ra" secondAttribute="bottom" constant="44" id="8k4-vj-IHe"/>
-                            <constraint firstItem="nlm-ey-mok" firstAttribute="leading" secondItem="xQo-2y-Ugd" secondAttribute="leading" constant="97" id="AS3-4N-aVt"/>
-                            <constraint firstItem="1eP-Ay-SRo" firstAttribute="top" secondItem="mN2-y4-cQI" secondAttribute="bottom" constant="36" id="ChQ-HQ-HtW"/>
+                            <constraint firstItem="mN2-y4-cQI" firstAttribute="top" secondItem="NRt-ta-6ra" secondAttribute="bottom" constant="46" id="8k4-vj-IHe"/>
+                            <constraint firstItem="nlm-ey-mok" firstAttribute="leading" secondItem="xQo-2y-Ugd" secondAttribute="leading" constant="99" id="AS3-4N-aVt"/>
+                            <constraint firstItem="1eP-Ay-SRo" firstAttribute="top" secondItem="mN2-y4-cQI" secondAttribute="bottom" constant="38" id="ChQ-HQ-HtW"/>
                             <constraint firstItem="nlm-ey-mok" firstAttribute="top" secondItem="xQo-2y-Ugd" secondAttribute="top" constant="94" id="Dlc-Ix-hfH"/>
-                            <constraint firstItem="xQo-2y-Ugd" firstAttribute="trailing" secondItem="nlm-ey-mok" secondAttribute="trailing" constant="101" id="G0q-87-tDM"/>
+                            <constraint firstItem="xQo-2y-Ugd" firstAttribute="trailing" secondItem="nlm-ey-mok" secondAttribute="trailing" constant="99" id="G0q-87-tDM"/>
                             <constraint firstItem="RYU-lv-xjt" firstAttribute="top" secondItem="xQo-2y-Ugd" secondAttribute="top" constant="36" id="GBg-SE-x6p"/>
                             <constraint firstItem="mN2-y4-cQI" firstAttribute="leading" secondItem="1eP-Ay-SRo" secondAttribute="leading" id="Jah-cK-t97"/>
-                            <constraint firstItem="NRt-ta-6ra" firstAttribute="leading" secondItem="xQo-2y-Ugd" secondAttribute="leading" constant="72" id="Jkz-Zy-l0A"/>
+                            <constraint firstItem="NRt-ta-6ra" firstAttribute="leading" secondItem="xQo-2y-Ugd" secondAttribute="leading" constant="52" id="Jkz-Zy-l0A"/>
                             <constraint firstItem="tl0-fq-nzw" firstAttribute="bottom" secondItem="cAC-c1-FBg" secondAttribute="bottom" id="OSU-ql-1M5"/>
                             <constraint firstItem="qtX-Y5-B0B" firstAttribute="top" secondItem="nlm-ey-mok" secondAttribute="bottom" constant="53" id="OkV-Zt-wTx"/>
                             <constraint firstItem="xQo-2y-Ugd" firstAttribute="trailing" secondItem="cAC-c1-FBg" secondAttribute="trailing" constant="42" id="P9w-ir-BgP"/>
@@ -638,7 +661,7 @@
                             <constraint firstItem="7ca-Bm-Jrn" firstAttribute="centerX" secondItem="cAC-c1-FBg" secondAttribute="centerX" id="huT-aX-MXd"/>
                             <constraint firstItem="RYU-lv-xjt" firstAttribute="leading" secondItem="xQo-2y-Ugd" secondAttribute="leading" constant="22" id="jnM-eR-OKq"/>
                             <constraint firstItem="xQo-2y-Ugd" firstAttribute="trailing" secondItem="7ca-Bm-Jrn" secondAttribute="trailing" constant="49" id="p5o-zo-QMZ"/>
-                            <constraint firstItem="mN2-y4-cQI" firstAttribute="leading" secondItem="xQo-2y-Ugd" secondAttribute="leading" constant="132" id="rYZ-e2-Ygu"/>
+                            <constraint firstItem="mN2-y4-cQI" firstAttribute="leading" secondItem="xQo-2y-Ugd" secondAttribute="leading" constant="144" id="rYZ-e2-Ygu"/>
                             <constraint firstItem="qtX-Y5-B0B" firstAttribute="leading" secondItem="tl0-fq-nzw" secondAttribute="leading" id="tFH-cP-dJp"/>
                             <constraint firstItem="qtX-Y5-B0B" firstAttribute="centerY" secondItem="7ca-Bm-Jrn" secondAttribute="centerY" id="tbr-aC-rXw"/>
                         </constraints>
@@ -679,11 +702,11 @@
                                                 <stackView contentMode="scaleToFill" axis="vertical" alignment="top" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="Stk-00-001">
                                                     <rect key="frame" x="200" y="12.333333333333332" width="91" height="42.666666666666671"/>
                                                     <subviews>
-                                                        <label contentMode="scaleToFill" text="Full Name" lineBreakMode="tailTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Lbl-Name">
+                                                        <label contentMode="scaleToFill" ambiguous="YES" text="Full Name" lineBreakMode="tailTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Lbl-Name">
                                                             <rect key="frame" x="0.0" y="0.0" width="75.666666666666671" height="20.333333333333332"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                         </label>
-                                                        <label contentMode="scaleToFill" text="@username" lineBreakMode="tailTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Lbl-User">
+                                                        <label contentMode="scaleToFill" ambiguous="YES" text="@username" lineBreakMode="tailTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Lbl-User">
                                                             <rect key="frame" x="0.0" y="22.333333333333329" width="91" height="20.333333333333329"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                         </label>
@@ -868,7 +891,7 @@
     </scenes>
     <inferredMetricsTieBreakers>
         <segue reference="1gA-SH-MlM"/>
-        <segue reference="VPy-oF-XWV"/>
+        <segue reference="lng-2J-B4x"/>
         <segue reference="j9O-3m-OpF"/>
         <segue reference="aK6-wT-zhQ"/>
     </inferredMetricsTieBreakers>
