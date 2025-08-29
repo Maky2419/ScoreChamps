@@ -196,106 +196,16 @@
                     <view key="view" contentMode="scaleToFill" id="g4V-c6-7sa">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="GgL-b2-nJE">
-                                <rect key="frame" x="16" y="228" width="361" height="590"/>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                                <color key="separatorColor" red="0.90980392160000001" green="0.87058823529999996" blue="0.81960784310000001" alpha="1" colorSpace="calibratedRGB"/>
-                                <color key="sectionIndexColor" red="0.074509803920000006" green="0.16078431369999999" blue="0.27058823529999998" alpha="1" colorSpace="calibratedRGB"/>
-                                <color key="sectionIndexBackgroundColor" red="0.90980392160000001" green="0.87058823529999996" blue="0.81960784310000001" alpha="1" colorSpace="calibratedRGB"/>
-                            </tableView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wDO-Nm-s1c">
-                                <rect key="frame" x="243" y="93" width="134" height="48"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="134" id="2yP-rb-8lJ"/>
-                                </constraints>
-                                <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="filled" title="Notifications">
-                                    <fontDescription key="titleFontDescription" name="STIXTwoMath-Regular" family="STIX Two Math" pointSize="20"/>
-                                </buttonConfiguration>
-                                <connections>
-                                    <segue destination="aLw-8y-dZX" kind="show" id="nfC-1o-IsV"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mrI-MY-M6D">
-                                <rect key="frame" x="16" y="93" width="95" height="48"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="48" id="Vlg-Ob-Ngz"/>
-                                    <constraint firstAttribute="width" constant="95" id="iCL-Am-tjQ"/>
-                                </constraints>
-                                <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="filled" title="Log out">
-                                    <fontDescription key="titleFontDescription" name="STIXTwoMath-Regular" family="STIX Two Math" pointSize="20"/>
-                                </buttonConfiguration>
-                                <connections>
-                                    <action selector="logoutTapped:" destination="pZr-lR-edI" eventType="touchUpInside" id="F8C-dD-nvK"/>
-                                    <segue destination="BYZ-38-t0r" kind="show" id="10t-d8-awZ"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mpN-GD-OOo">
-                                <rect key="frame" x="229" y="183" width="148" height="43"/>
-                                <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="filled" title="New Score">
-                                    <fontDescription key="titleFontDescription" name="STIXTwoMath-Regular" family="STIX Two Math" pointSize="20"/>
-                                </buttonConfiguration>
-                                <connections>
-                                    <action selector="newScoreTapped:" destination="pZr-lR-edI" eventType="touchUpInside" id="Z9n-5E-4Mk"/>
-                                    <segue destination="xE8-Y1-u6E" kind="show" id="V61-10-BK1"/>
-                                </connections>
-                            </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Scores" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fPm-gV-NK3">
-                                <rect key="frame" x="105" y="194" width="98" height="21"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="21" id="caq-O4-348"/>
-                                    <constraint firstAttribute="width" constant="98" id="zAn-or-3pv"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" name="STIXTwoMath-Regular" family="STIX Two Math" pointSize="25"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="j8r-BU-hOl">
-                                <rect key="frame" x="125" y="93" width="110" height="48"/>
-                                <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="filled" title="Friends">
-                                    <fontDescription key="titleFontDescription" name="STIXTwoMath-Regular" family="STIX Two Math" pointSize="20"/>
-                                </buttonConfiguration>
-                                <connections>
-                                    <segue destination="0Dg-e7-lR3" kind="showDetail" id="1gA-SH-MlM"/>
-                                </connections>
-                            </button>
-                        </subviews>
                         <viewLayoutGuide key="safeArea" id="g3F-za-v2e"/>
                         <color key="backgroundColor" red="0.90980392160000001" green="0.87058823529999996" blue="0.81960784310000001" alpha="1" colorSpace="calibratedRGB"/>
-                        <constraints>
-                            <constraint firstItem="mpN-GD-OOo" firstAttribute="top" secondItem="j8r-BU-hOl" secondAttribute="bottom" constant="42" id="0bo-5t-lVV"/>
-                            <constraint firstItem="j8r-BU-hOl" firstAttribute="leading" secondItem="mrI-MY-M6D" secondAttribute="trailing" constant="14" id="1gV-3W-nAA"/>
-                            <constraint firstItem="mrI-MY-M6D" firstAttribute="top" secondItem="wDO-Nm-s1c" secondAttribute="top" id="6Uf-Tc-fwp"/>
-                            <constraint firstItem="GgL-b2-nJE" firstAttribute="top" secondItem="mpN-GD-OOo" secondAttribute="bottom" constant="2" id="8Dx-x4-S4A"/>
-                            <constraint firstItem="mpN-GD-OOo" firstAttribute="trailing" secondItem="GgL-b2-nJE" secondAttribute="trailing" id="8cu-6x-pgj"/>
-                            <constraint firstItem="wDO-Nm-s1c" firstAttribute="trailing" secondItem="g4V-c6-7sa" secondAttribute="trailingMargin" id="BLE-Yr-4GX"/>
-                            <constraint firstItem="wDO-Nm-s1c" firstAttribute="trailing" secondItem="mpN-GD-OOo" secondAttribute="trailing" id="JsT-zT-4Fc"/>
-                            <constraint firstItem="mpN-GD-OOo" firstAttribute="leading" secondItem="fPm-gV-NK3" secondAttribute="trailing" constant="26" id="Mso-UD-dVa"/>
-                            <constraint firstItem="fPm-gV-NK3" firstAttribute="leading" secondItem="g3F-za-v2e" secondAttribute="leading" constant="105" id="NnT-2u-J23"/>
-                            <constraint firstItem="mpN-GD-OOo" firstAttribute="top" secondItem="wDO-Nm-s1c" secondAttribute="bottom" constant="42" id="QpP-Sa-X4p"/>
-                            <constraint firstItem="GgL-b2-nJE" firstAttribute="bottom" secondItem="g3F-za-v2e" secondAttribute="bottom" id="YtP-G6-Yvu"/>
-                            <constraint firstItem="wDO-Nm-s1c" firstAttribute="leading" secondItem="j8r-BU-hOl" secondAttribute="trailing" constant="8" id="ZcA-cY-R27"/>
-                            <constraint firstItem="mrI-MY-M6D" firstAttribute="bottom" secondItem="wDO-Nm-s1c" secondAttribute="bottom" id="dWQ-wl-pNW"/>
-                            <constraint firstItem="j8r-BU-hOl" firstAttribute="top" secondItem="g3F-za-v2e" secondAttribute="top" constant="34" id="hcq-Cc-VrE"/>
-                            <constraint firstItem="mrI-MY-M6D" firstAttribute="leading" secondItem="GgL-b2-nJE" secondAttribute="leading" id="ho4-xH-zoH"/>
-                            <constraint firstItem="mrI-MY-M6D" firstAttribute="top" secondItem="g3F-za-v2e" secondAttribute="top" constant="34" id="pTY-0m-edk"/>
-                            <constraint firstItem="fPm-gV-NK3" firstAttribute="centerY" secondItem="mpN-GD-OOo" secondAttribute="centerY" id="umV-Gb-7xj"/>
-                            <constraint firstItem="GgL-b2-nJE" firstAttribute="top" secondItem="fPm-gV-NK3" secondAttribute="bottom" constant="13" id="zLR-7T-I2E"/>
-                            <constraint firstItem="mrI-MY-M6D" firstAttribute="leading" secondItem="g4V-c6-7sa" secondAttribute="leadingMargin" id="zMA-hk-OuL"/>
-                        </constraints>
                     </view>
+                    <toolbarItems/>
                     <navigationItem key="navigationItem" id="Mrk-le-ipk"/>
-                    <connections>
-                        <outlet property="tableView" destination="GgL-b2-nJE" id="dCT-CA-MN1"/>
-                    </connections>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="nsg-Ac-N01" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1690.8396946564885" y="-2.1126760563380285"/>
+            <point key="canvasLocation" x="2029.7709923664122" y="10.563380281690142"/>
         </scene>
         <!--New Score View Controller-->
         <scene sceneID="QnZ-Xl-bP1">
@@ -306,7 +216,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="Xg8-KJ-o6H">
-                                <rect key="frame" x="16" y="159" width="361" height="625"/>
+                                <rect key="frame" x="16" y="125" width="361" height="625"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="625" id="PWH-uN-jOa"/>
@@ -323,7 +233,7 @@
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Please Select a friend:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5qt-r0-MAQ">
-                                <rect key="frame" x="149" y="91" width="228" height="25"/>
+                                <rect key="frame" x="149" y="57" width="228" height="25"/>
                                 <fontDescription key="fontDescription" name="STIXTwoMath-Regular" family="STIX Two Math" pointSize="25"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -533,6 +443,21 @@
             </objects>
             <point key="canvasLocation" x="3000.7633587786258" y="743.66197183098598"/>
         </scene>
+        <!--Account View Controller-->
+        <scene sceneID="fFZ-qX-rHh">
+            <objects>
+                <viewController storyboardIdentifier="AccountViewController" id="IAc-E8-Cq0" customClass="AccountViewController" customModule="ScoreChamps" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="ET7-OC-aPy">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <viewLayoutGuide key="safeArea" id="ja2-8e-nI7"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="TQa-Mf-dcy" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3820" y="867"/>
+        </scene>
         <!--Login-->
         <scene sceneID="TjR-H0-aHk">
             <objects>
@@ -679,7 +604,7 @@
         <!--Friends-->
         <scene sceneID="YIo-sp-cr1">
             <objects>
-                <viewController modalPresentationStyle="fullScreen" id="0Dg-e7-lR3" customClass="Friends" customModule="ScoreChamps" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="Friends" modalPresentationStyle="fullScreen" id="0Dg-e7-lR3" customClass="Friends" customModule="ScoreChamps" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="RuA-rh-Pgc">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -702,11 +627,11 @@
                                                 <stackView contentMode="scaleToFill" axis="vertical" alignment="top" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="Stk-00-001">
                                                     <rect key="frame" x="200" y="12.333333333333332" width="91" height="42.666666666666671"/>
                                                     <subviews>
-                                                        <label contentMode="scaleToFill" ambiguous="YES" text="Full Name" lineBreakMode="tailTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Lbl-Name">
+                                                        <label contentMode="scaleToFill" text="Full Name" lineBreakMode="tailTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Lbl-Name">
                                                             <rect key="frame" x="0.0" y="0.0" width="75.666666666666671" height="20.333333333333332"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                         </label>
-                                                        <label contentMode="scaleToFill" ambiguous="YES" text="@username" lineBreakMode="tailTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Lbl-User">
+                                                        <label contentMode="scaleToFill" text="@username" lineBreakMode="tailTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Lbl-User">
                                                             <rect key="frame" x="0.0" y="22.333333333333329" width="91" height="20.333333333333329"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                         </label>
@@ -848,17 +773,17 @@
         <!--Notifications View Controller-->
         <scene sceneID="mAT-mK-hzH">
             <objects>
-                <viewController modalPresentationStyle="fullScreen" id="aLw-8y-dZX" customClass="NotificationsViewController" customModule="ScoreChamps" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="NotificationsViewController" modalPresentationStyle="fullScreen" id="aLw-8y-dZX" customClass="NotificationsViewController" customModule="ScoreChamps" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="gW6-mY-0lI">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="15y-jG-L6D">
-                                <rect key="frame" x="16" y="158" width="361" height="660"/>
+                                <rect key="frame" x="16" y="217" width="361" height="567"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             </tableView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Akh-r6-K3g">
-                                <rect key="frame" x="28" y="96" width="77" height="39"/>
+                                <rect key="frame" x="28" y="155" width="77" height="39"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="filled" title="Back">
                                     <fontDescription key="titleFontDescription" name="STIXTwoMath-Regular" family="STIX Two Math" pointSize="25"/>
@@ -869,7 +794,7 @@
                             </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="Kj6-aD-dlu"/>
-                        <color key="backgroundColor" red="0.90980392160000001" green="0.87058823529999996" blue="0.81960784310000001" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="backgroundColor" red="0.92156862745098034" green="0.89411764705882346" blue="0.85882352941176465" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                         <constraints>
                             <constraint firstItem="Akh-r6-K3g" firstAttribute="leading" secondItem="Kj6-aD-dlu" secondAttribute="leading" constant="28" id="Di2-uh-tYe"/>
                             <constraint firstItem="15y-jG-L6D" firstAttribute="leading" secondItem="gW6-mY-0lI" secondAttribute="leadingMargin" id="k0d-Uy-MUQ"/>
@@ -890,10 +815,10 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="1gA-SH-MlM"/>
+        <segue reference="zMJ-GI-DW7"/>
         <segue reference="lng-2J-B4x"/>
         <segue reference="j9O-3m-OpF"/>
-        <segue reference="aK6-wT-zhQ"/>
+        <segue reference="K3p-f6-26t"/>
     </inferredMetricsTieBreakers>
     <resources>
         <image name="Image" width="1000" height="1000"/>

@@ -676,3 +676,63 @@ struct DeleteRequest {
         return out
     }
 }
+// MARK: - Account management
+extension FirebaseService {
+
+    /// Set `Accounts/<uid>/password` to a new value.
+    func updatePassword(uid: String,
+                        newPassword: String,
+                        completion: @escaping (Bool, String?) -> Void) {
+        ref.child("Accounts").child(uid).child("password")
+            .setValue(newPassword) { err, _ in
+                completion(err == nil, err?.localizedDescription)
+            }
+    }
+
+    /// Deletes the user's account and cleans references in other accounts:
+    /// - removes /Accounts/<uid>
+    /// - removes this uid from other users' friends
+    /// - removes matches on other users where opponentUserId == uid
+    /// Note: best-effort cleanup; rules may prevent cross-user writes in some setups.
+    func deleteAccountComprehensively(uid: String,
+                                      completion: @escaping (Bool, String?) -> Void) {
+
+        ref.child("Accounts").observeSingleEvent(of: .value) { snap in
+            guard let all = snap.value as? [String: Any] else {
+                self.ref.child("Accounts").child(uid).removeValue { err, _ in
+                    completion(err == nil, err?.localizedDescription)
+                }
+                return
+            }
+
+            var updates: [String: Any] = [:]
+            // Remove my node
+            updates["/Accounts/\(uid)"] = NSNull()
+
+            // Walk everyone to clean friends and matches that reference me
+            for (otherUid, raw) in all {
+                guard otherUid != uid, let dict = raw as? [String: Any] else { continue }
+
+                // Friends cleanup
+                if let friends = dict["friends"] as? [String: Any], friends.keys.contains(uid) {
+                    updates["/Accounts/\(otherUid)/friends/\(uid)"] = NSNull()
+                }
+
+                // Matches cleanup: remove any match whose opponentUserId == uid
+                if let matches = dict["matches"] as? [String: Any] {
+                    for (mid, mraw) in matches {
+                        if let md = mraw as? [String: Any],
+                           let opp = md["opponentUserId"] as? String,
+                           opp == uid {
+                            updates["/Accounts/\(otherUid)/matches/\(mid)"] = NSNull()
+                        }
+                    }
+                }
+            }
+
+            self.ref.updateChildValues(updates) { err, _ in
+                completion(err == nil, err?.localizedDescription)
+            }
+        }
+    }
+}
